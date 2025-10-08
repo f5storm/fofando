@@ -7,7 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Caveat&family=Montserrat&family=Pacifico&family=Playfair+Display&family=Poppins:wght@300;400;600&family=Roboto+Slab&family=Source+Code+Pro&display=swap" rel="stylesheet">
     <style>
         body {
             font-family: 'Poppins', sans-serif;
@@ -16,6 +16,18 @@
         }
         .font-pacifico {
             font-family: 'Pacifico', cursive;
+        }
+        h2 {
+            font-family: 'Roboto Slab', serif;
+        }
+        #secret-message {
+            font-family: 'Source Code Pro', monospace;
+        }
+        #compliment-text {
+            font-family: 'Caveat', cursive;
+            font-size: 1.75rem; /* Tamanho maior para a fonte de caligrafia */
+            line-height: 2.25rem;
+            min-height: 90px; /* Evita que o layout pule com cantadas de tamanhos diferentes */
         }
         .star {
             position: absolute;
@@ -50,6 +62,13 @@
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
+        .fade-out {
+            animation: fadeOutAnimation 1s ease-out forwards;
+        }
+        @keyframes fadeOutAnimation {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
         .fade-in-delay-1 { animation-delay: 0.2s; }
         .fade-in-delay-2 { animation-delay: 0.4s; }
         .fade-in-delay-3 { animation-delay: 0.6s; }
@@ -64,58 +83,85 @@
 </head>
 <body class="text-white">
 
-    <!-- Fundo de estrelas --><div id="star-background" class="fixed top-0 left-0 w-full h-full -z-10"></div>
+    <!-- Fundo de estrelas -->
+    <div id="star-background" class="fixed top-0 left-0 w-full h-full -z-10"></div>
 
-    <div class="container mx-auto px-4 py-12 min-h-screen flex flex-col items-center justify-center">
-
-        <!-- Seção 1: Título Principal --><header class="text-center mb-16 fade-in">
+    <!-- Tela de Início -->
+    <div id="start-screen" class="fixed top-0 left-0 w-full h-full z-20 flex flex-col items-center justify-center text-center p-4">
+        <header class="mb-8 fade-in">
             <h1 class="font-pacifico text-5xl md:text-7xl text-purple-300 drop-shadow-lg">Feito pra você, Duda Fófano</h1>
         </header>
-
-        <!-- Seção 2: Gerador de Elogios --><section class="w-full max-w-2xl text-center mb-16 fade-in fade-in-delay-1">
-            <div class="card rounded-2xl p-8 shadow-2xl">
-                <h2 class="text-3xl font-bold mb-4 text-pink-300">Gerador de Cantadas (quase) Infalíveis</h2>
-                <p class="text-lg mb-6" id="compliment-text">Queria ser uma integral para preencher a área sob as suas curvas.</p>
-                <button id="compliment-button" class="btn-magic text-white font-bold py-3 px-8 rounded-full transition-transform transform hover:scale-110 shadow-lg">
-                    Tentar outra cantada
-                </button>
-            </div>
-        </section>
-
-        <!-- Seção 3: Bola de Cristal --><section class="w-full max-w-2xl text-center mb-16 fade-in fade-in-delay-2">
-            <div class="card rounded-2xl p-8 shadow-2xl">
-                 <h2 class="text-3xl font-bold mb-4 text-amber-300">A Bola de Cristal do Destino</h2>
-                 <p class="mb-6">O que será que o futuro nos reserva? Faça uma pergunta (em pensamento) e clique para descobrir.</p>
-                 <div id="crystal-ball-container" class="relative w-48 h-48 mx-auto mb-6 cursor-pointer group">
-                    <div class="w-full h-full bg-blue-900 rounded-full absolute top-0 left-0 opacity-60 group-hover:opacity-80 transition-opacity"></div>
-                    <div id="crystal-ball-reflection" class="w-20 h-10 bg-white rounded-full absolute top-6 left-10 opacity-20 -rotate-12 group-hover:scale-110 transition-transform"></div>
-                    <div id="crystal-ball-inner" class="w-full h-full flex items-center justify-center">
-                        <span id="crystal-ball-text" class="text-xl font-bold text-white transition-opacity duration-500 opacity-0 text-center px-2">?</span>
-                    </div>
-                 </div>
-                 <button id="crystal-ball-button" class="btn-magic text-white font-bold py-3 px-8 rounded-full transition-transform transform hover:scale-110 shadow-lg">
-                    Revelar o Futuro
-                </button>
-            </div>
-        </section>
-        
-        <!-- Seção 4: Convite Final --><section class="w-full max-w-2xl text-center fade-in fade-in-delay-3">
-            <div class="card rounded-2xl p-8 shadow-2xl">
-                <h2 class="text-3xl font-bold mb-4 text-cyan-300">Que tal criar algo real?</h2>
-                <p class="text-lg mb-6">Este site tem um último easter egg, mas ele só funciona offline...</p>
-                <a href="data:text/vcard;charset=utf-8,BEGIN%3AVCARD%0AVERSION%3A3.0%0AFN%3AAmor%20Da%20Sua%20Vida%0ATEL%3BTYPE%3DCELL%3A33984363259%0AEND%3AVCARD" download="contato.vcf" class="bg-green-500 text-white font-bold py-3 px-8 rounded-full transition-transform transform hover:scale-110 shadow-lg hover:bg-green-400 inline-block">
-                    Eu topo!
-                </a>
-            </div>
-        </section>
-
+        <button id="start-button" class="btn-magic text-white font-bold py-3 px-8 rounded-full transition-transform transform hover:scale-110 shadow-lg fade-in fade-in-delay-1">
+            Começar
+        </button>
     </div>
 
-    <!-- Rodapé --><footer class="text-center py-8 text-gray-400 text-sm">
-        <p>Feito por Rafael Chaves Sebe.</p>
-    </footer>
+    <!-- Conteúdo Principal -->
+    <main id="main-content" class="hidden">
+        <div class="container mx-auto px-4 py-12 min-h-screen flex flex-col items-center justify-center">
+            <!-- Seção 2: Gerador de Elogios -->
+            <section class="w-full max-w-2xl text-center mb-16 fade-in fade-in-delay-1">
+                <div class="card rounded-2xl p-8 shadow-2xl">
+                    <h2 class="text-3xl font-bold mb-4 text-pink-300">Gerador de Cantadas (quase) Infalíveis</h2>
+                    <p class="mb-6" id="compliment-text"></p>
+                    <button id="compliment-button" class="btn-magic text-white font-bold py-3 px-8 rounded-full transition-transform transform hover:scale-110 shadow-lg">
+                        Tentar outra cantada
+                    </button>
+                </div>
+            </section>
 
-    <!-- Reprodutor de Música do YouTube --><div id="player" style="display: none;"></div>
+            <!-- Seção 3: Bola de Cristal -->
+            <section class="w-full max-w-2xl text-center mb-16 fade-in fade-in-delay-2">
+                <div class="card rounded-2xl p-8 shadow-2xl">
+                     <h2 class="text-3xl font-bold mb-4 text-amber-300">A Bola de Cristal do Destino</h2>
+                     <p class="mb-6">O que será que o futuro nos reserva? Faça uma pergunta (em pensamento) e clique para descobrir.</p>
+                     <div id="crystal-ball-container" class="relative w-48 h-48 mx-auto mb-6 cursor-pointer group">
+                        <div class="w-full h-full bg-blue-900 rounded-full absolute top-0 left-0 opacity-60 group-hover:opacity-80 transition-opacity"></div>
+                        <div id="crystal-ball-reflection" class="w-20 h-10 bg-white rounded-full absolute top-6 left-10 opacity-20 -rotate-12 group-hover:scale-110 transition-transform"></div>
+                        <div id="crystal-ball-inner" class="w-full h-full flex items-center justify-center">
+                            <span id="crystal-ball-text" class="text-xl font-bold text-white transition-opacity duration-500 opacity-0 text-center px-2">?</span>
+                        </div>
+                     </div>
+                     <button id="crystal-ball-button" class="btn-magic text-white font-bold py-3 px-8 rounded-full transition-transform transform hover:scale-110 shadow-lg">
+                        Revelar o Futuro
+                    </button>
+                </div>
+            </section>
+            
+            <!-- Nova Seção: Mensagem Secreta -->
+            <section class="w-full max-w-2xl text-center mb-16 fade-in fade-in-delay-3">
+                <div class="card rounded-2xl p-8 shadow-2xl">
+                     <h2 class="text-3xl font-bold mb-4 text-teal-300">Decifre a Mensagem Secreta</h2>
+                     <p class="mb-6">Existe uma mensagem escondida aqui. Será que você consegue revelá-la?</p>
+                     <div class="bg-gray-900 rounded-lg p-4 mb-6 text-left">
+                        <pre id="secret-message" class="text-lg whitespace-pre-wrap text-green-400"></pre>
+                     </div>
+                     <button id="decrypt-button" class="btn-magic text-white font-bold py-3 px-8 rounded-full transition-transform transform hover:scale-110 shadow-lg">
+                        Decifrar
+                    </button>
+                </div>
+            </section>
+
+            <!-- Seção 5: Convite Final -->
+            <section class="w-full max-w-2xl text-center fade-in fade-in-delay-4">
+                <div class="card rounded-2xl p-8 shadow-2xl">
+                    <h2 class="text-3xl font-bold mb-4 text-cyan-300">indo para realidade...</h2>
+                    <p class="text-lg mb-6">Este site tem um último easter egg, mas ele só funciona offline...</p>
+                    <a href="data:text/vcard;charset=utf-8,BEGIN%3AVCARD%0AVERSION%3A3.0%0AFN%3AAmor%20Da%20Sua%20Vida%0ATEL%3BTYPE%3DCELL%3A33984363259%0AEND%3AVCARD" download="contato.vcf" class="bg-green-500 text-white font-bold py-3 px-8 rounded-full transition-transform transform hover:scale-110 shadow-lg hover:bg-green-400 inline-block">
+                        Eu topo!
+                    </a>
+                </div>
+            </section>
+        </div>
+
+        <!-- Rodapé -->
+        <footer class="text-center py-8 text-gray-400 text-sm">
+            <p>Feito por Rafael Chaves Sebe.</p>
+        </footer>
+    </main>
+
+    <!-- Reprodutor de Música do YouTube -->
+    <div id="player" style="display: none;"></div>
 
     <script>
         // Carrega a API do YouTube Player de forma assíncrona.
@@ -167,6 +213,20 @@
         }
 
         document.addEventListener('DOMContentLoaded', function() {
+            // --- Script da Tela de Início ---
+            const startScreen = document.getElementById('start-screen');
+            const startButton = document.getElementById('start-button');
+            const mainContent = document.getElementById('main-content');
+
+            startButton.addEventListener('click', () => {
+                startScreen.classList.add('fade-out');
+
+                startScreen.addEventListener('animationend', () => {
+                    startScreen.style.display = 'none';
+                    mainContent.classList.remove('hidden');
+                }, { once: true });
+            });
+            
             // --- Script para Fundo de Estrelas ---
             const starBackground = document.getElementById('star-background');
             const numStars = 100;
@@ -216,14 +276,45 @@
             ];
             const complimentText = document.getElementById('compliment-text');
             const complimentButton = document.getElementById('compliment-button');
+            let shuffledCompliments = [...compliments];
             let complimentIndex = 0;
+            let showingFinalMessage = false;
+            const finalMessage = "Se nenhuma dessas cantadas funcionar, me manda uma melhor.";
+
+            function shuffle(array) {
+                for (let i = array.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [array[i], array[j]] = [array[j], array[i]];
+                }
+            }
+
+            // Initial setup
+            shuffle(shuffledCompliments);
+            complimentText.textContent = shuffledCompliments[0];
 
             complimentButton.addEventListener('click', () => {
-                complimentIndex = (complimentIndex + 1) % compliments.length;
+                let nextText = "";
+
+                if (showingFinalMessage) {
+                    // Reset and reshuffle
+                    shuffle(shuffledCompliments);
+                    complimentIndex = 0;
+                    showingFinalMessage = false;
+                    nextText = shuffledCompliments[complimentIndex];
+                } else {
+                    complimentIndex++;
+                    if (complimentIndex < shuffledCompliments.length) {
+                        nextText = shuffledCompliments[complimentIndex];
+                    } else {
+                        // Reached the end, show the final message
+                        nextText = finalMessage;
+                        showingFinalMessage = true;
+                    }
+                }
                 
                 complimentText.style.opacity = 0;
                 setTimeout(() => {
-                    complimentText.textContent = compliments[complimentIndex];
+                    complimentText.textContent = nextText;
                     complimentText.style.opacity = 1;
                 }, 300);
             });
@@ -266,6 +357,72 @@
             
             crystalBallButton.addEventListener('click', showAnswer);
             crystalBallContainer.addEventListener('click', showAnswer);
+
+            // --- Script para Mensagem Secreta ---
+            const decryptButton = document.getElementById('decrypt-button');
+            const secretMessageElement = document.getElementById('secret-message');
+            const secretPhrases = [
+                "Cada clique revela um pouco mais...",
+                "Ainda não acabou, tem mais um segredo...",
+                "Você está perto de descobrir tudo.",
+                "Só mais um enigma para resolver.",
+                "Clique no botão verde no final da página para descobrir..."
+            ];
+            const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()[]{};";
+            let currentPhraseIndex = -1;
+            let isDecrypting = false;
+
+            // Gera um texto inicial aleatório para parecer um código
+            let initialEncryptedText = "";
+            const placeholderLength = secretPhrases[0].length;
+            for (let i = 0; i < placeholderLength; i++) {
+                 if (secretPhrases[0][i] === ' ') {
+                    initialEncryptedText += ' '; // Mantém espaços para preservar a estrutura
+                } else {
+                    initialEncryptedText += chars[Math.floor(Math.random() * chars.length)];
+                }
+            }
+            secretMessageElement.textContent = initialEncryptedText;
+
+            const decryptNextMessage = () => {
+                if (isDecrypting) return;
+                isDecrypting = true;
+
+                currentPhraseIndex = (currentPhraseIndex + 1) % secretPhrases.length;
+                const finalMessage = secretPhrases[currentPhraseIndex];
+                
+                decryptButton.disabled = true;
+                decryptButton.style.opacity = '0.5';
+                decryptButton.style.cursor = 'not-allowed';
+
+                let iteration = 0;
+                
+                const interval = setInterval(() => {
+                    secretMessageElement.textContent = finalMessage.split("")
+                        .map((char, index) => {
+                            if (finalMessage[index] === ' ') return ' ';
+                            if(index < iteration) {
+                                return finalMessage[index];
+                            }
+                            return chars[Math.floor(Math.random() * chars.length)];
+                        })
+                        .join("");
+                    
+                    if(iteration >= finalMessage.length){ 
+                        clearInterval(interval);
+                        secretMessageElement.textContent = finalMessage;
+                        decryptButton.disabled = false;
+                        decryptButton.style.opacity = '1';
+                        decryptButton.style.cursor = 'pointer';
+                        isDecrypting = false;
+                    }
+                    
+                    iteration += 1 / 2;
+                }, 40);
+            };
+
+            decryptButton.addEventListener('click', decryptNextMessage);
+
         });
     </script>
 
