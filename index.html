@@ -140,7 +140,8 @@
                     'playlist': 'izGwDsrQ1eQ', // Necessário para o loop funcionar
                     'modestbranding': 1,
                     'rel': 0,
-                    'showinfo': 0
+                    'showinfo': 0,
+                    'playsinline': 1 // Essencial para iOS
                 },
                 events: {
                     'onReady': onPlayerReady
@@ -160,6 +161,10 @@
         function unmuteOnFirstInteraction() {
             if (player && typeof player.unMute === 'function') {
                 player.unMute();
+                // Garante que o vídeo toque caso o autoplay inicial tenha sido bloqueado
+                if (player.getPlayerState() !== 1) { // 1 === YT.PlayerState.PLAYING
+                    player.playVideo();
+                }
             }
         }
 
