@@ -3,1075 +3,272 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Visão Geral dos Receptores Beta</title>
+    <title>Uma Página Para Você</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
-        :root {
-            /* == Theme Colors for Beta Receptors == */
-            --beta1-color: #3b82f6;      /* Blue for Beta-1 */
-            --beta2-color: #ec4899;     /* Pink for Beta-2 */
-            --beta3-color: #8b5cf6; /* Purple for Beta-3 */
-
-            /* Light Theme Palette */
-            --bg-main: #f4f7f9;
-            --text-primary: #1e293b;
-            --text-secondary: #475569;
-            --border-color: #e2e8f0;
-        }
-
-        html { scroll-behavior: smooth; }
-        body { 
-            font-family: 'Inter', sans-serif; 
-            color: var(--text-primary);
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #1a1a2e;
             overflow-x: hidden;
-            background-color: var(--bg-main);
-            transition: background-color 0.5s ease-in-out; /* For quiz feedback */
         }
-        
-        /* == Background color flash for Quiz == */
-        body.correct-bg { background-color: #dcfce7; }
-        body.incorrect-bg { background-color: #fee2e2; }
-        
-        .section-container {
-            width: 100%;
-            padding: 5rem 2rem;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            position: relative;
-            z-index: 1;
+        .font-pacifico {
+            font-family: 'Pacifico', cursive;
         }
-        
-        #hero { 
-            min-height: 80vh; 
-            padding-top: 2rem; 
-            padding-bottom: 2rem;
-        }
-        #hero h1 { 
-            font-size: clamp(2.8rem, 7vw, 5rem); 
-            font-weight: 800; 
-            letter-spacing: -0.05em; 
-        }
-        #hero p { 
-            font-size: clamp(1.1rem, 2.5vw, 1.35rem); 
-            max-width: 650px; 
-            color: var(--text-secondary);
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        .section-header-card {
-            background: white;
-            border: 1px solid var(--border-color);
-            border-radius: 1rem;
-            padding: 2.5rem;
-            margin-bottom: 3rem;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-            text-align: center;
-            max-width: 1200px;
-            width: 100%;
-            opacity: 0;
-            transform: translateY(50px);
-            transition: opacity 0.5s ease-out, transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-        }
-        .section-header-card.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .section-title { font-size: clamp(2.2rem, 5.5vw, 4rem); font-weight: 800; letter-spacing: -0.04em; color: var(--text-primary); position: relative; }
-        .section-subtitle { 
-            font-size: clamp(1rem, 2vw, 1.2rem); 
-            max-width: 700px; 
-            color: var(--text-secondary); 
-            margin-bottom: 0;
-            margin-left: auto; 
-            margin-right: auto; 
-        }
-
-        .topics-grid {
-            width: 100%;
-            max-width: 1200px;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 1.5rem;
-            align-items: start;
-        }
-
-        .topic-card {
-            background: white;
-            border: 1px solid var(--border-color);
-            border-radius: 1rem;
-            transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-            overflow: hidden;
-            opacity: 0;
-            transform: translateY(50px);
-            transition: opacity 0.5s ease-out, transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94), border-top 0.3s ease;
-            border-top: 4px solid transparent;
-        }
-
-        #topic-beta1 { border-top-color: var(--beta1-color); }
-        #topic-beta2 { border-top-color: var(--beta2-color); }
-        #topic-beta3 { border-top-color: var(--beta3-color); }
-        
-        .topic-card.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-        
-        .topic-card:nth-child(1) { transition-delay: 0.05s; }
-        .topic-card:nth-child(2) { transition-delay: 0.1s; }
-        .topic-card:nth-child(3) { transition-delay: 0.15s; }
-
-        .topic-card:hover { 
-            transform: translateY(-5px);
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
-        }
-        
-        .topic-card .summary { 
-            color: var(--text-primary);
-            font-size: 1.125rem; 
-            font-weight: 600; 
-            padding: 1.5rem; 
-            cursor: pointer; 
-            outline: none; 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-        }
-        .topic-card .summary::after { 
-            content: '▾'; 
-            font-size: 1.5rem; 
-            font-weight: 400; 
-            color: var(--text-secondary);
-            transition: transform 0.3s ease-in-out; 
-        }
-        .topic-card.is-open > .summary::after { transform: rotate(180deg); }
-        .topic-card.is-open > .summary { 
-            border-bottom: 1px solid var(--border-color); 
-        }
-        
-        .topic-content-wrapper {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.5s ease-in-out;
-        }
-        .topic-content { 
-            padding: 1.5rem; 
-            font-size: 0.95rem; 
-            color: var(--text-secondary);
-        }
-        .topic-content h4 {
-            font-weight: 600;
-            color: var(--text-primary);
-            margin-top: 1.25rem;
-            margin-bottom: 0.5rem;
-            padding-bottom: 0.25rem;
-            border-bottom: 1px solid var(--border-color);
-        }
-         .topic-content h4:first-child {
-            margin-top: 0;
-        }
-
-        .footer-signature { text-align: center; padding: 4rem 1rem; background-color: transparent; color: #94a3b8; }
-        ul { list-style-position: inside; padding-left: 0.5rem;}
-        li { margin-bottom: 0.5rem; }
-
-        /* == Quiz Styles == */
-        #quiz-section {
-             background: transparent;
-             border-top: 1px solid var(--border-color);
-        }
-
-        .quiz-container {
-            max-width: 800px;
-            width: 100%;
-            background: white;
-            border: 1px solid var(--border-color);
-            border-radius: 1.5rem;
-            padding: 2.5rem;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.08);
-            position: relative;
-        }
-        
-        #progress-bar-container {
-            width: 100%;
-            max-width: 800px;
-            background-color: #e2e8f0;
-            border-radius: 9999px;
-            padding: 0.5rem;
-            margin-bottom: 2rem;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            border: 1px solid #e2e8f0;
-        }
-        #progress-bar-fill {
-            height: 1.5rem;
-            background: linear-gradient(90deg, #8b5cf6, #3b82f6);
-            border-radius: 9999px;
-            transition: width 0.5s ease-in-out;
-            text-align: center;
-            color: white;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.875rem;
-        }
-        #progress-label {
-            text-align: center;
-            margin-top: 0.75rem;
-            margin-bottom: 2rem;
-            font-weight: 500;
-            color: var(--text-secondary);
-        }
-        
-        #question-counter-display {
+        .star {
             position: absolute;
-            top: 2.5rem;
-            right: 2.5rem;
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.8rem;
-            font-weight: 700;
-            color: white;
-            transition: all 0.3s ease;
-        }
-        #question-counter-display.facil-bg { background-color: #22c55e; }
-        #question-counter-display.media-bg { background-color: #f59e0b; }
-        #question-counter-display.dificil-bg { background-color: #ef4444; }
-        
-        #timer-display {
-            position: absolute;
-            top: 2.5rem;
-            left: 2.5rem;
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            background-color: #f1f5f9;
-            border: 3px solid var(--text-secondary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1rem;
-            font-weight: 700;
-            color: var(--text-primary);
-            transition: all 0.3s ease;
-        }
-        #timer-display.warning {
-            border-color: #f59e0b;
-            color: #b45309;
-            transform: scale(1.1);
-        }
-        #timer-display.danger {
-            border-color: #ef4444;
-            color: #991b1b;
-            transform: scale(1.1);
-            animation: pulse 1s infinite;
-        }
-        @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.5); }
-            70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
-        }
-        
-        #quiz-question {
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: var(--text-primary);
-            margin-bottom: 2rem;
-            padding: 0 60px; /* Space for timer and difficulty */
-            text-align: center;
-        }
-        
-        #quiz-options {
-            list-style: none;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
-
-        .quiz-option {
-            background-color: #f8fafc;
-            border: 1px solid var(--border-color);
-            border-radius: 1rem;
-            padding: 1.25rem;
-            font-size: 1.1rem;
-            cursor: pointer;
-            transition: all 0.2s ease-out;
-        }
-
-        .quiz-option:hover {
-            border-color: var(--beta2-color);
-            background-color: white;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -2px rgba(0, 0, 0, 0.07);
-        }
-        
-        .quiz-option.disabled { cursor: not-allowed; opacity: 0.7; }
-        .quiz-option.correct-answer {
-            border-color: #22c55e;
-            background-color: #f0fdf4;
-            color: #15803d;
-            font-weight: 600;
-        }
-        .quiz-option.incorrect-answer {
-            border-color: #ef4444;
-            background-color: #fef2f2;
-            color: #b91c1c;
-            font-weight: 600;
-        }
-        
-        #quiz-start-btn, #restart-quiz-btn {
-            background: white;
-            font-weight: 700;
-            padding: 1rem 2.5rem;
-            border-radius: 0.75rem;
-            font-size: 1.2rem;
-            border: 1px solid var(--border-color);
-            cursor: pointer;
-            transition: all 0.2s ease-in-out;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-        }
-        
-        #quiz-start-btn { color: var(--text-primary); }
-        #quiz-start-btn:disabled { 
-            cursor: not-allowed; 
-            background: #f1f5f9;
-            color: #94a3b8;
-        }
-
-        #restart-quiz-btn {
-            color: var(--beta2-color);
-            margin-top: 2rem;
-            border-color: var(--beta2-color);
-        }
-        
-        #reset-progress-btn {
-            color: #475569;
-            background: none;
-            font-size: 0.9rem;
-            font-weight: 600;
-            padding: 0.75rem 1.5rem;
-            border: none;
-            cursor: pointer;
-            transition: all 0.2s ease-in-out;
-        }
-
-        #quiz-start-btn:hover, #restart-quiz-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
-        }
-
-        #reset-progress-btn:hover {
-             color: var(--text-primary);
-             text-decoration: underline;
-        }
-        
-        #quiz-results { text-align: center; }
-        
-        #quiz-results h3 {
-             font-size: 2rem;
-             font-weight: 700;
-             margin-bottom: 1.5rem;
-        }
-
-        #quiz-percentage {
-            font-size: 3.5rem;
-            font-weight: 800;
-            color: var(--text-primary);
-            margin-bottom: 2rem;
-            width: 150px;
-            height: 150px;
             background: white;
             border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-left: auto;
-            margin-right: auto;
-            border: 1px solid var(--border-color);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            animation: twinkle 5s infinite ease-in-out;
         }
-        
-        .results-stats {
-            display: flex;
-            justify-content: center;
-            gap: 1.5rem;
-            margin-bottom: 2.5rem;
-            font-size: 1.1rem;
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.5; transform: scale(0.8); }
+            50% { opacity: 1; transform: scale(1); }
         }
-        
-        .stat-correct, .stat-incorrect {
-            font-weight: 600;
-            color: var(--text-primary);
-            padding: 0.5rem 1.25rem;
-            border-radius: 9999px;
-            transition: all 0.2s ease-in-out;
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
-
-        .stat-correct { background-color: rgba(34, 197, 94, 0.2); }
-        .stat-incorrect { background-color: rgba(239, 68, 68, 0.2); }
-        
-        #missed-topics-list {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 0.75rem;
-            list-style: none;
-            padding: 0;
-            margin-top: 1rem;
+        .btn-magic {
+            background: linear-gradient(45deg, #f87171, #fb923c, #a78bfa, #c084fc);
+            background-size: 400% 400%;
+            animation: gradient-animation 10s ease infinite;
         }
-
-        .missed-topic-bubble {
-            background-color: #f1f5f9;
-            color: var(--text-secondary);
-            padding: 0.5rem 1rem;
-            border-radius: 9999px;
-            font-size: 0.9rem;
-            font-weight: 500;
-            transition: all 0.2s ease-in-out;
-            cursor: pointer;
-            border: 1px solid var(--border-color);
+        @keyframes gradient-animation {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
-
-        .missed-topic-bubble:hover {
-            background-color: #e2e8f0;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-        }
-
-        .missed-topic-bubble.visited-topic {
-            border-color: #22c55e;
-            background-color: #f0fdf4;
-            color: #166534;
-        }
-
-        /* == Tooltip/Popup Styles == */
-        .tooltip-trigger {
-            text-decoration: underline;
-            text-decoration-style: dotted;
-            cursor: pointer;
-            font-weight: 600;
-        }
-
-        #topic-beta1 .tooltip-trigger { color: var(--beta1-color); }
-        #topic-beta2 .tooltip-trigger { color: var(--beta2-color); }
-        #topic-beta3 .tooltip-trigger { color: var(--beta3-color); }
-
-        #popup-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            z-index: 999;
+        .fade-in {
+            animation: fadeInAnimation 1s ease-in forwards;
             opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.3s ease, visibility 0.3s ease;
         }
-
-        #popup-overlay.show {
-            opacity: 1;
-            visibility: visible;
+        @keyframes fadeInAnimation {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-
-        #popup-modal {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) scale(0.95);
-            width: 90%;
-            max-width: 500px;
-            background: white;
-            border-radius: 1.5rem;
-            padding: 2.5rem;
-            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
-            z-index: 1000;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-        }
-
-        #popup-overlay.show #popup-modal {
-            transform: translate(-50%, -50%) scale(1);
-            opacity: 1;
-            visibility: visible;
-        }
-
-        #popup-title {
-            font-size: 1.75rem;
-            font-weight: 700;
-            color: var(--text-primary);
-            margin-bottom: 1rem;
-        }
-
-        #popup-content {
-            font-size: 1.1rem;
-            color: var(--text-secondary);
-            line-height: 1.6;
-        }
-
-        #popup-close-btn {
-            position: absolute;
-            top: 1rem;
-            right: 1rem;
-            width: 40px;
-            height: 40px;
-            background-color: #f1f5f9;
-            border: none;
-            border-radius: 50%;
-            cursor: pointer;
-            font-size: 1.5rem;
-            font-weight: 300;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--text-secondary);
-            transition: background-color 0.2s, transform 0.2s;
-        }
-
-        #popup-close-btn:hover {
-            background-color: #e2e8f0;
-            transform: rotate(90deg);
+        .fade-in-delay-1 { animation-delay: 0.2s; }
+        .fade-in-delay-2 { animation-delay: 0.4s; }
+        .fade-in-delay-3 { animation-delay: 0.6s; }
+        .fade-in-delay-4 { animation-delay: 0.8s; }
+         @keyframes shake {
+            10%, 90% { transform: translate3d(-1px, 0, 0); }
+            20%, 80% { transform: translate3d(2px, 0, 0); }
+            30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+            40%, 60% { transform: translate3d(4px, 0, 0); }
         }
     </style>
 </head>
-<body>
+<body class="text-white">
 
-    <section id="hero" class="section-container">
-        <div class="section-header-card" style="background: transparent; border: none; box-shadow: none;">
-            <h1>Visão Geral dos Receptores Beta</h1>
-            <p class="mt-4">Explore os subtipos de receptores adrenérgicos beta (β1, β2 e β3), seus mecanismos de ação e o impacto fisiológico de sua ativação.</p>
-        </div>
-    </section>
-    
-    <section id="receptores-beta" class="section-container">
-        <div class="section-header-card">
-            <h2 class="section-title">Receptores Beta (β)</h2>
-            <p class="section-subtitle">Os receptores β são acoplados à proteína G e modulam funções vitais no coração, pulmões e metabolismo. Todos se acoplam à proteína Gs, e os subtipos β2 e β3 também à proteína Gi.</p>
-        </div>
-        <div class="topics-grid">
-            <div class="topic-card" id="topic-beta1">
-                <div class="summary">Receptor Beta-1 (β1)</div>
-                <div class="topic-content-wrapper">
-                    <div class="topic-content">
-                        <h4>Efeito Fisiológico Principal</h4>
-                        <ul>
-                            <li>A ativação resulta no aumento dos efeitos <a href="#" class="tooltip-trigger">cronotrópicos</a> (frequência cardíaca) e <a href="#" class="tooltip-trigger">inotrópicos</a> (força de contração) do coração.</li>
-                        </ul>
-                        <h4>Mecanismo de Ação Celular</h4>
-                        <ul>
-                            <li>Acoplado à <a href="#" class="tooltip-trigger">Proteína Gs</a>, sua ativação estimula a enzima adenilato ciclase, aumentando o <a href="#" class="tooltip-trigger">cAMP</a> intracelular.</li>
-                        </ul>
-                        <h4>Efeitos Adversos da Ativação</h4>
-                        <ul>
-                             <li>Estimulação excessiva pode levar a <a href="#" class="tooltip-trigger">taquicardia</a>, <a href="#" class="tooltip-trigger">palpitações</a>, <a href="#" class="tooltip-trigger">hipertensão</a> e <a href="#" class="tooltip-trigger">taquiarritmias</a>.</li>
-                             <li>Ansiedade também é um efeito comum.</li>
-                        </ul>
-                         <h4>Precauções para Ativação</h4>
-                        <ul>
-                             <li>Requer cautela em pacientes que já possuem <a href="#" class="tooltip-trigger">arritmias</a>.</li>
-                        </ul>
-                         <h4>Parâmetros de Monitoramento</h4>
-                        <ul>
-                             <li>Monitorar a pressão arterial e a possível ocorrência de arritmias.</li>
-                        </ul>
+    <!-- Fundo de estrelas --><div id="star-background" class="fixed top-0 left-0 w-full h-full -z-10"></div>
+
+    <div class="container mx-auto px-4 py-12 min-h-screen flex flex-col items-center justify-center">
+
+        <!-- Seção 1: Título Principal --><header class="text-center mb-16 fade-in">
+            <h1 class="font-pacifico text-5xl md:text-7xl text-purple-300 drop-shadow-lg">Feito pra você, Duda Fófano</h1>
+        </header>
+
+        <!-- Seção 2: Gerador de Elogios --><section class="w-full max-w-2xl text-center mb-16 fade-in fade-in-delay-1">
+            <div class="card rounded-2xl p-8 shadow-2xl">
+                <h2 class="text-3xl font-bold mb-4 text-pink-300">Gerador de Cantadas (quase) Infalíveis</h2>
+                <p class="text-lg mb-6" id="compliment-text">Queria ser uma integral para preencher a área sob as suas curvas.</p>
+                <button id="compliment-button" class="btn-magic text-white font-bold py-3 px-8 rounded-full transition-transform transform hover:scale-110 shadow-lg">
+                    Tentar outra cantada
+                </button>
+            </div>
+        </section>
+
+        <!-- Seção 3: Bola de Cristal --><section class="w-full max-w-2xl text-center mb-16 fade-in fade-in-delay-2">
+            <div class="card rounded-2xl p-8 shadow-2xl">
+                 <h2 class="text-3xl font-bold mb-4 text-amber-300">A Bola de Cristal do Destino</h2>
+                 <p class="mb-6">O que será que o futuro nos reserva? Faça uma pergunta (em pensamento) e clique para descobrir.</p>
+                 <div id="crystal-ball-container" class="relative w-48 h-48 mx-auto mb-6 cursor-pointer group">
+                    <div class="w-full h-full bg-blue-900 rounded-full absolute top-0 left-0 opacity-60 group-hover:opacity-80 transition-opacity"></div>
+                    <div id="crystal-ball-reflection" class="w-20 h-10 bg-white rounded-full absolute top-6 left-10 opacity-20 -rotate-12 group-hover:scale-110 transition-transform"></div>
+                    <div id="crystal-ball-inner" class="w-full h-full flex items-center justify-center">
+                        <span id="crystal-ball-text" class="text-xl font-bold text-white transition-opacity duration-500 opacity-0 text-center px-2">?</span>
                     </div>
-                </div>
+                 </div>
+                 <button id="crystal-ball-button" class="btn-magic text-white font-bold py-3 px-8 rounded-full transition-transform transform hover:scale-110 shadow-lg">
+                    Revelar o Futuro
+                </button>
             </div>
-            <div class="topic-card" id="topic-beta2">
-                <div class="summary">Receptor Beta-2 (β2)</div>
-                <div class="topic-content-wrapper">
-                    <div class="topic-content">
-                         <h4>Efeito Fisiológico Principal</h4>
-                        <ul>
-                            <li>Promove a <a href="#" class="tooltip-trigger">broncodilatação</a> pelo relaxamento da musculatura lisa dos brônquios.</li>
-                        </ul>
-                        <h4>Mecanismo de Ação Celular</h4>
-                        <ul>
-                            <li>Acoplado tanto à <a href="#" class="tooltip-trigger">Proteína Gs</a> quanto à <a href="#" class="tooltip-trigger">Proteína Gi</a>.</li>
-                            <li>A ativação via Gs aumenta o <a href="#" class="tooltip-trigger">cAMP</a>, resultando no relaxamento muscular.</li>
-                        </ul>
-                        <h4>Efeitos Adversos da Ativação</h4>
-                        <ul>
-                            <li>Os efeitos comuns incluem tremores, <a href="#" class="tooltip-trigger">taquicardia</a>, <a href="#" class="tooltip-trigger">palpitações</a> e ansiedade.</li>
-                            <li>A ativação contínua pode causar <a href="#" class="tooltip-trigger">hipocalemia</a> (níveis baixos de potássio).</li>
-                        </ul>
-                         <h4>Precauções para Ativação</h4>
-                        <ul>
-                             <li>Relativamente contraindicado em pacientes com hipocalemia.</li>
-                        </ul>
-                         <h4>Parâmetros de Monitoramento</h4>
-                        <ul>
-                             <li>Monitorar <a href="#" class="tooltip-trigger">broncoespasmo paradoxal</a>, pressão arterial, frequência cardíaca e efeitos no SNC.</li>
-                        </ul>
-                    </div>
-                </div>
+        </section>
+        
+        <!-- Seção 4: Convite Final --><section class="w-full max-w-2xl text-center fade-in fade-in-delay-3">
+            <div class="card rounded-2xl p-8 shadow-2xl">
+                <h2 class="text-3xl font-bold mb-4 text-cyan-300">Que tal criar algo real?</h2>
+                <p class="text-lg mb-6">Este site tem um último easter egg, mas ele só funciona offline...</p>
+                <a href="data:text/vcard;charset=utf-8,BEGIN%3AVCARD%0AVERSION%3A3.0%0AFN%3AAmor%20Da%20Sua%20Vida%0ATEL%3BTYPE%3DCELL%3A33984363259%0AEND%3AVCARD" download="contato.vcf" class="bg-green-500 text-white font-bold py-3 px-8 rounded-full transition-transform transform hover:scale-110 shadow-lg hover:bg-green-400 inline-block">
+                    Eu topo!
+                </a>
             </div>
-             <div class="topic-card" id="topic-beta3">
-                <div class="summary">Receptor Beta-3 (β3)</div>
-                <div class="topic-content-wrapper">
-                    <div class="topic-content">
-                        <h4>Efeito Fisiológico Principal</h4>
-                        <ul>
-                            <li>Associado ao aumento da <a href="#" class="tooltip-trigger">lipólise</a>, o processo de quebra de gordura nas células adiposas.</li>
-                        </ul>
-                        <h4>Mecanismo de Ação Celular</h4>
-                        <ul>
-                             <li>Assim como o receptor β2, o β3 é acoplado às proteínas <a href="#" class="tooltip-trigger">Proteína Gs</a> e <a href="#" class="tooltip-trigger">Proteína Gi</a>.</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+        </section>
 
-    <section id="quiz-section" class="section-container">
-        <div class="section-header-card">
-            <h2 class="section-title">Teste seu Conhecimento</h2>
-            <p class="section-subtitle">Vamos ver o que você aprendeu! Responda às perguntas a seguir para testar sua compreensão sobre os receptores beta.</p>
-        </div>
-
-        <div id="quiz-area" class="w-full max-w-3xl flex flex-col items-center">
-            
-            <div id="progress-bar-container">
-                <div id="progress-bar-fill" style="width: 0%;">0%</div>
-            </div>
-            <div id="progress-label">Progresso: 0 de 20 questões dominadas</div>
-
-            <div id="quiz-container" class="quiz-container hidden">
-                <div id="timer-display">30</div>
-                <div id="question-counter-display"></div>
-                <h3 id="quiz-question"></h3>
-                <ul id="quiz-options"></ul>
-            </div>
-
-            <div id="quiz-results" class="quiz-container hidden">
-                <h3>Quiz Finalizado!</h3>
-                <div id="quiz-percentage">100%</div>
-                <div class="results-stats">
-                    <span id="stat-correct-count" class="stat-correct"></span>
-                    <span id="stat-incorrect-count" class="stat-incorrect"></span>
-                </div>
-                <h4 class="text-lg font-semibold mt-6 mb-2 text-slate-700">Tópicos para revisar:</h4>
-                <ul id="missed-topics-list"></ul>
-                 <button id="restart-quiz-btn">Novo Quiz</button>
-            </div>
-
-            <div id="start-area" class="flex flex-col items-center">
-                 <button id="quiz-start-btn">Começar Quiz</button>
-                 <button id="reset-progress-btn">Zerar Progresso</button>
-            </div>
-
-        </div>
-    </section>
-
-    <footer class="footer-signature">
-        <p>Conteúdo adaptado para fins educacionais.</p>
-    </footer>
-    
-    <!-- Popup Modal Structure -->
-    <div id="popup-overlay">
-        <div id="popup-modal" role="dialog" aria-modal="true" aria-labelledby="popup-title">
-            <button id="popup-close-btn" aria-label="Fechar">&times;</button>
-            <h3 id="popup-title"></h3>
-            <p id="popup-content"></p>
-        </div>
     </div>
 
+    <!-- Rodapé --><footer class="text-center py-8 text-gray-400 text-sm">
+        <p>Feito por Rafael Chaves Sebe.</p>
+    </footer>
+
+    <!-- Reprodutor de Música do YouTube --><div id="player" style="display: none;"></div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // Observer for card animations
-            const cardObserver = new IntersectionObserver((entries, observer) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('visible');
-                    } 
-                });
-            }, {
-                threshold: 0.1
-            });
-            document.querySelectorAll('.topic-card, .section-header-card').forEach(card => {
-                cardObserver.observe(card);
-            });
-            
-            // Accordion logic
-            document.querySelectorAll('.topic-card .summary').forEach(summary => {
-                summary.addEventListener('click', (e) => {
-                    const card = e.currentTarget.parentElement;
-                    toggleAccordion(card);
-                });
-            });
+        // Carrega a API do YouTube Player de forma assíncrona.
+        var tag = document.createElement('script');
+        tag.src = "https://www.youtube.com/iframe_api";
+        var firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
-            function toggleAccordion(cardToToggle) {
-                const contentWrapper = cardToToggle.querySelector('.topic-content-wrapper');
-                const isOpen = cardToToggle.classList.contains('is-open');
+        var player;
+        // Esta função é chamada pela API do YouTube quando o código está pronto.
+        function onYouTubeIframeAPIReady() {
+            player = new YT.Player('player', {
+                height: '0',
+                width: '0',
+                videoId: 'izGwDsrQ1eQ',
+                playerVars: {
+                    'autoplay': 1,
+                    'controls': 0,
+                    'loop': 1,
+                    'playlist': 'izGwDsrQ1eQ', // Necessário para o loop funcionar
+                    'modestbranding': 1,
+                    'rel': 0,
+                    'showinfo': 0,
+                    'playsinline': 1 // Essencial para iOS
+                },
+                events: {
+                    'onReady': onPlayerReady
+                }
+            });
+        }
 
-                const parentGrid = cardToToggle.closest('.topics-grid');
-                parentGrid.querySelectorAll('.topic-card.is-open').forEach(openCard => {
-                    if (openCard !== cardToToggle) {
-                        const otherContentWrapper = openCard.querySelector('.topic-content-wrapper');
-                        otherContentWrapper.style.maxHeight = '0px';
-                        openCard.classList.remove('is-open');
-                    }
-                });
+        // A API chama esta função quando o player está pronto.
+        function onPlayerReady(event) {
+            event.target.mute(); // Deixa mudo para o autoplay funcionar
+            event.target.playVideo();
+            // Adiciona um listener para tirar o mudo na primeira interação do usuário
+            document.body.addEventListener('click', unmuteOnFirstInteraction, { once: true });
+            document.body.addEventListener('touchstart', unmuteOnFirstInteraction, { once: true });
+        }
 
-                if (isOpen) {
-                    contentWrapper.style.maxHeight = '0px';
-                    cardToToggle.classList.remove('is-open');
-                } else {
-                    const content = cardToToggle.querySelector('.topic-content');
-                    contentWrapper.style.maxHeight = content.scrollHeight + 'px';
-                    cardToToggle.classList.add('is-open');
+        function unmuteOnFirstInteraction() {
+            if (player && typeof player.unMute === 'function') {
+                player.unMute();
+                // Garante que o vídeo toque caso o autoplay inicial tenha sido bloqueado
+                if (player.getPlayerState() !== 1) { // 1 === YT.PlayerState.PLAYING
+                    player.playVideo();
                 }
             }
+        }
 
-            // ===================================
-            // == POPUP/TOOLTIP LOGIC
-            // ===================================
-            const definitions = {
-                'cronotrópicos': 'Refere-se a uma alteração na frequência cardíaca. Um efeito cronotrópico positivo aumenta a frequência dos batimentos.',
-                'inotrópicos': 'Refere-se a uma alteração na força de contração do músculo cardíaco. Um efeito inotrópico positivo aumenta a força da contração.',
-                'Proteína Gs': 'Uma proteína de membrana que, quando ativada, estimula a enzima Adenilato Ciclase, resultando no aumento dos níveis de cAMP. O \'s\' significa \'estimulatória\'.',
-                'Proteína Gi': 'Uma proteína de membrana que, quando ativada, inibe a enzima Adenilato Ciclase, resultando na diminuição dos níveis de cAMP. O \'i\' significa \'inibitória\'.',
-                'cAMP': 'Monofosfato de Adenosina Cíclico. Um segundo mensageiro crucial envolvido em muitas vias de sinalização, como o metabolismo e o relaxamento da musculatura lisa.',
-                'taquicardia': 'Uma frequência cardíaca anormalmente rápida, geralmente definida como acima de 100 batimentos por minuto em um adulto em repouso.',
-                'palpitações': 'A sensação de que o coração está batendo muito rápido, pulando batidas ou batendo de forma irregular.',
-                'hipertensão': 'Pressão arterial elevada, uma condição em que a força do sangue contra as paredes das artérias é consistentemente muito alta.',
-                'taquiarritmias': 'Um tipo de arritmia em que o coração bate mais rápido do que o normal.',
-                'arritmias': 'Qualquer alteração no ritmo normal dos batimentos cardíacos, que pode ser muito rápido, muito lento ou irregular.',
-                'broncodilatação': 'O relaxamento e alargamento das vias aéreas (brônquios) nos pulmões, facilitando a respiração.',
-                'hipocalemia': 'Níveis de potássio no sangue abaixo do normal, o que pode causar fraqueza muscular, cãibras e, em casos graves, arritmias cardíacas.',
-                'broncoespasmo paradoxal': 'Uma contração inesperada e súbita dos músculos das vias aéreas (brônquios) que pode ocorrer após o uso de um broncodilatador.',
-                'lipólise': 'A quebra de lipídios (gorduras) em ácidos graxos e glicerol, liberando energia.'
-            };
-
-            const popupOverlay = document.getElementById('popup-overlay');
-            const popupTitle = document.getElementById('popup-title');
-            const popupContent = document.getElementById('popup-content');
-            const popupCloseBtn = document.getElementById('popup-close-btn');
-
-            function showPopup(term, definition) {
-                popupTitle.textContent = term;
-                popupContent.textContent = definition;
-                popupOverlay.classList.add('show');
+        document.addEventListener('DOMContentLoaded', function() {
+            // --- Script para Fundo de Estrelas ---
+            const starBackground = document.getElementById('star-background');
+            const numStars = 100;
+            for (let i = 0; i < numStars; i++) {
+                let star = document.createElement('div');
+                star.className = 'star';
+                let size = Math.random() * 3;
+                star.style.width = `${size}px`;
+                star.style.height = `${size}px`;
+                star.style.top = `${Math.random() * 100}%`;
+                star.style.left = `${Math.random() * 100}%`;
+                star.style.animationDelay = `${Math.random() * 5}s`;
+                starBackground.appendChild(star);
             }
 
-            function hidePopup() {
-                popupOverlay.classList.remove('show');
-            }
+            // --- Script para Gerador de Cantadas ---
+            const compliments = [
+                "Você é cardiologista? Porque você acelerou meu coração.",
+                "Você deve ser um ângulo de 90 graus, porque está sempre certa.",
+                "Nossa relação é como um gráfico de f(x) = x², sempre positiva.",
+                "Sua beleza é de deixar qualquer um em parada cardiorrespiratória.",
+                "Você deve ser feita de Cobre e Telúrio, porque é muito Cu-Te.",
+                "Você é uma hemorragia? Porque não consigo te estancar do meu pensamento.",
+                "Você não é Azitromicina, mas um pouco de você curaria qualquer mal.",
+                "Gata, você é a hipotenusa? Porque é o lado oposto ao meu ângulo reto.",
+                "Você é neurologista? Porque você não sai da minha cabeça.",
+                "Queria ser uma integral para preencher a área sob as suas curvas.",
+                "Acho que estou com arritmia toda vez que te vejo.",
+                "Você é a raiz quadrada de -1? Porque você é simplesmente irreal.",
+                "Se eu fosse uma enzima, seria a helicase para abrir seu coração.",
+                "Se a beleza fosse um número, você seria o infinito.",
+                "Você é a vacina que eu preciso contra a tristeza.",
+                "Você é uma calculadora? Porque sem você, não consigo resolver meus problemas.",
+                "Você transforma meu conjunto vazio em um conjunto unitário.",
+                "Seu nome é Mielina? Porque você acelera meus impulsos nervosos.",
+                "Você é um axioma? Porque aceito sua beleza sem precisar de provas.",
+                "Me chama de desfibrilador, porque você reanima meu coração.",
+                "Se você fosse uma função, seria a minha preferida para derivar.",
+                "Nós dois temos uma química perfeita.",
+                "Você é um ponto e vírgula? Porque sinto que não posso continuar sem você.",
+                "Seu nome é CSS? Porque você dá estilo a tudo na minha vida.",
+                "Esquece a segunda lei de Newton. A única força que importa é a nossa atração.",
+                "Você deve ser um buraco negro, pois a força da sua atração é irresistível.",
+                "Me chama de Pitágoras e deixa eu te mostrar que a soma dos nossos quadrados é a perfeição.",
+                "Você é um número primo? Porque você é realmente única.",
+                "Se nós fôssemos funções, eu seria sua derivada para estar sempre tangente a você."
+            ];
+            const complimentText = document.getElementById('compliment-text');
+            const complimentButton = document.getElementById('compliment-button');
+            let complimentIndex = 0;
 
-            document.body.addEventListener('click', (e) => {
-                if (e.target.classList.contains('tooltip-trigger')) {
-                    e.preventDefault();
-                    const term = e.target.textContent;
-                    const definition = definitions[term];
-                    if (definition) {
-                        showPopup(term, definition);
-                    }
-                }
+            complimentButton.addEventListener('click', () => {
+                complimentIndex = (complimentIndex + 1) % compliments.length;
+                
+                complimentText.style.opacity = 0;
+                setTimeout(() => {
+                    complimentText.textContent = compliments[complimentIndex];
+                    complimentText.style.opacity = 1;
+                }, 300);
             });
 
-            popupCloseBtn.addEventListener('click', hidePopup);
-            popupOverlay.addEventListener('click', (e) => {
-                if (e.target === popupOverlay) {
-                    hidePopup();
-                }
-            });
-            document.addEventListener('keydown', (e) => {
-                if (e.key === 'Escape' && popupOverlay.classList.contains('show')) {
-                    hidePopup();
-                }
-            });
-            
-            // ===================================
-            // == QUIZ LOGIC
-            // ===================================
+            // --- Script para Bola de Cristal ---
+            const crystalBallButton = document.getElementById('crystal-ball-button');
+            const crystalBallText = document.getElementById('crystal-ball-text');
+            const crystalBallContainer = document.getElementById('crystal-ball-container');
 
-            const questionBank = [
-                { id: 1, difficulty: 'Fácil', question: "Qual é o principal efeito fisiológico da ativação dos receptores Beta-1 (β1)?", topic: "Receptor Beta-1 (β1)", options: ["Broncodilatação", "Aumento da frequência e força cardíaca", "Quebra de gordura (lipólise)", "Contração da pupila"], correctAnswer: 1 },
-                { id: 2, difficulty: 'Fácil', question: "A ativação dos receptores Beta-2 (β2) causa principalmente qual efeito?", topic: "Receptor Beta-2 (β2)", options: ["Aumento da pressão arterial", "Diminuição da frequência cardíaca", "Relaxamento da musculatura lisa dos brônquios", "Aumento da lipólise"], correctAnswer: 2 },
-                { id: 3, difficulty: 'Fácil', question: "Qual receptor Beta está mais associado à lipólise (quebra de gordura)?", topic: "Receptor Beta-3 (β3)", options: ["Beta-1 (β1)", "Beta-2 (β2)", "Beta-3 (β3)", "Nenhum deles"], correctAnswer: 2 },
-                { id: 4, difficulty: 'Fácil', question: "Todos os três subtipos de receptores beta (β1, β2, β3) são acoplados a qual tipo de proteína G?", topic: "Receptores Beta (β)", options: ["Proteína Gq", "Proteína Gi", "Proteína Gs", "Proteína Gt"], correctAnswer: 2 },
-                { id: 5, difficulty: 'Fácil', question: "Um aumento de cAMP intracelular é o resultado da ativação da via de qual proteína G?", topic: "Receptores Beta (β)", options: ["Proteína Gq", "Proteína Gi", "Proteína Gs", "Nenhuma das anteriores"], correctAnswer: 2 },
-                { id: 6, difficulty: 'Fácil', question: "Taquicardia e palpitações são efeitos adversos comuns da ativação de qual receptor?", topic: "Receptor Beta-1 (β1)", options: ["Apenas Beta-3", "Apenas Beta-2", "Beta-1 e Beta-2", "Nenhum deles"], correctAnswer: 2 },
-                { id: 7, difficulty: 'Fácil', question: "O que se deve monitorar em um paciente após a ativação de receptores Beta-1?", topic: "Receptor Beta-1 (β1)", options: ["Níveis de glicose", "Pressão arterial e arritmias", "Função renal", "Temperatura corporal"], correctAnswer: 1 },
-                { id: 8, difficulty: 'Média', question: "Quais subtipos de receptores beta também são acoplados à proteína Gi, além da Gs?", topic: "Receptores Beta (β)", options: ["Apenas β1", "Apenas β3", "β1 e β2", "β2 e β3"], correctAnswer: 3 },
-                { id: 9, difficulty: 'Média', question: "Um paciente com arritmias pré-existentes deve ter cautela com a ativação de qual receptor?", topic: "Receptor Beta-1 (β1)", options: ["Beta-1 (β1)", "Beta-2 (β2)", "Beta-3 (β3)", "Todos os receptores beta"], correctAnswer: 0 },
-                { id: 10, difficulty: 'Média', question: "Qual é um efeito adverso notável da ativação contínua de receptores Beta-2, relacionado a um eletrólito?", topic: "Receptor Beta-2 (β2)", options: ["Hipercalemia (potássio alto)", "Hipocalemia (potássio baixo)", "Hiponatremia (sódio baixo)", "Hipercalcemia (cálcio alto)"], correctAnswer: 1 },
-                { id: 11, difficulty: 'Média', question: "Qual dos seguintes é um parâmetro de monitoramento específico para a ativação de receptores Beta-2?", topic: "Receptor Beta-2 (β2)", options: ["Lipólise", "Broncoespasmo paradoxal", "Contração cardíaca", "Função hepática"], correctAnswer: 1 },
-                { id: 12, difficulty: 'Média', question: "Tremores são um efeito adverso comum da ativação de qual receptor, frequentemente visto em pacientes que usam inaladores para asma?", topic: "Receptor Beta-2 (β2)", options: ["Beta-1 (β1)", "Beta-2 (β2)", "Beta-3 (β3)", "Nenhum deles"], correctAnswer: 1 },
-                { id: 13, difficulty: 'Média', question: "A ativação do receptor Beta-1 leva a um aumento de cAMP através da estimulação de qual enzima?", topic: "Receptor Beta-1 (β1)", options: ["Fosfolipase C", "Proteína Quinase A", "Adenilato Ciclase", "Tirosina Quinase"], correctAnswer: 2 },
-                { id: 14, difficulty: 'Média', question: "A ativação da via da proteína Gi nos receptores β2 e β3 pode levar a qual efeito no cAMP?", topic: "Receptores Beta (β)", options: ["Aumento do cAMP", "Nenhum efeito no cAMP", "Diminuição do cAMP", "Conversão de cAMP em ATP"], correctAnswer: 2 },
-                { id: 15, difficulty: 'Difícil', question: "A estimulação de receptores Beta-2 é relativamente contraindicada em pacientes com qual condição pré-existente?", topic: "Receptor Beta-2 (β2)", options: ["Hipertensão", "Asma", "Hipocalemia", "Diabetes"], correctAnswer: 2 },
-                { id: 16, difficulty: 'Difícil', question: "Se um fármaco ativasse seletivamente apenas a via Gi de um receptor Beta-2, qual seria o efeito esperado na musculatura lisa brônquica?", topic: "Receptor Beta-2 (β2)", options: ["Relaxamento forte (broncodilatação)", "Nenhum efeito", "Contração (broncoconstrição) ou ausência de relaxamento", "Aumento da secreção de muco"], correctAnswer: 2 },
-                { id: 17, difficulty: 'Difícil', question: "Por que a ativação de receptores Beta-2 pode causar taquicardia como efeito colateral, mesmo que seu alvo principal seja o pulmão?", topic: "Receptor Beta-2 (β2)", options: ["Porque os receptores β2 também estão presentes no coração em menor quantidade", "Porque causa uma queda de pressão que leva a um aumento reflexo da frequência cardíaca", "Ambas as opções A e B estão corretas", "Nenhuma das opções está correta"], correctAnswer: 2 },
-                { id: 18, difficulty: 'Difícil', question: "Qual é a lógica por trás do monitoramento de 'broncoespasmo paradoxal' ao usar um agonista Beta-2?", topic: "Receptor Beta-2 (β2)", options: ["É o efeito esperado do medicamento", "É uma reação rara e inesperada onde o medicamento causa o oposto do efeito desejado", "Significa que a dose foi muito baixa", "Ocorre apenas em pacientes com problemas cardíacos"], correctAnswer: 1 },
-                { id: 19, difficulty: 'Difícil', question: "Um paciente ansioso se queixa de palpitações após usar seu inalador de asma. Qual receptor está mais provavelmente sendo estimulado para causar ambos os efeitos?", topic: "Receptor Beta-2 (β2)", options: ["Apenas Beta-3", "Apenas Beta-1", "Principalmente Beta-2, com alguma estimulação cruzada de Beta-1", "Nenhum receptor beta está envolvido"], correctAnswer: 2 },
-                { id: 20, difficulty: 'Difícil', question: "Qual mecanismo explica como a ativação da via Gs nos receptores Beta-2 leva ao relaxamento muscular?", topic: "Receptor Beta-2 (β2)", options: ["O aumento do cAMP inibe as quinases que fosforilam a miosina, impedindo a contração", "O cAMP se liga diretamente à miosina, causando relaxamento", "O cAMP bloqueia a entrada de cálcio na célula", "O cAMP aumenta a quebra de glicogênio, que relaxa o músculo"], correctAnswer: 0 },
+            const answers = [
+                "É certo!",
+                "Sinais apontam que sim.",
+                "Pode contar com isso.",
+                "Tudo indica que vai rolar.",
+                "Sem dúvida.",
+                "As perspectivas são boas.",
+                "Acho que sim.",
+                "Concentre-se e pergunte de novo."
             ];
 
-            const startBtn = document.getElementById('quiz-start-btn');
-            const restartBtn = document.getElementById('restart-quiz-btn');
-            const resetBtn = document.getElementById('reset-progress-btn'); 
-            const startArea = document.getElementById('start-area');
-            const quizContainer = document.getElementById('quiz-container');
-            const resultsContainer = document.getElementById('quiz-results');
-            const questionEl = document.getElementById('quiz-question');
-            const optionsEl = document.getElementById('quiz-options');
-            const questionCounterDisplay = document.getElementById('question-counter-display');
-            const progressBarFill = document.getElementById('progress-bar-fill');
-            const progressLabel = document.getElementById('progress-label');
-            const timerDisplay = document.getElementById('timer-display');
-            
-            let currentQuestionIndex = 0;
-            let score = 0;
-            let missedTopics = [];
-            let activeQuiz = [];
-            let correctlyAnsweredIds = [];
+            const showAnswer = () => {
+                const randomIndex = Math.floor(Math.random() * answers.length);
+                const answer = answers[randomIndex];
 
-            let questionTimer;
-            let countdownInterval;
-            const TIMER_DURATION = 30; 
+                crystalBallText.textContent = "?";
+                crystalBallText.style.opacity = '0';
+                crystalBallContainer.style.animation = '';
 
-            function loadProgress() {
-                const savedProgress = localStorage.getItem('beta_quiz_progress');
-                correctlyAnsweredIds = savedProgress ? JSON.parse(savedProgress) : [];
-                updateProgressBar();
-                checkCompletion();
-            }
-
-            function saveProgress() {
-                localStorage.setItem('beta_quiz_progress', JSON.stringify(correctlyAnsweredIds));
-            }
-
-            function updateProgressBar() {
-                const totalQuestions = questionBank.length;
-                const answeredCount = correctlyAnsweredIds.length;
-                const percentage = totalQuestions > 0 ? Math.round((answeredCount / totalQuestions) * 100) : 0;
-                
-                progressBarFill.style.width = `${percentage}%`;
-                progressBarFill.textContent = `${percentage}%`;
-                progressLabel.textContent = `Progresso: ${answeredCount} de ${totalQuestions} questões dominadas`;
-            }
-
-            function checkCompletion() {
-                if (correctlyAnsweredIds.length >= questionBank.length) {
-                    startBtn.disabled = true;
-                    startBtn.textContent = "Parabéns, você dominou tudo!";
-                } else {
-                    startBtn.disabled = false;
-                    startBtn.textContent = "Começar Quiz";
-                }
-            }
-            
-            function startQuiz() {
-                const availableQuestions = questionBank.filter(q => !correctlyAnsweredIds.includes(q.id));
-                
-                if (availableQuestions.length === 0) {
-                     checkCompletion();
-                     return;
-                }
-                
-                activeQuiz = [...availableQuestions].sort(() => 0.5 - Math.random()).slice(0, 10);
-                
-                currentQuestionIndex = 0;
-                score = 0;
-                missedTopics = [];
-                
-                startArea.classList.add('hidden');
-                resultsContainer.classList.add('hidden');
-                quizContainer.classList.remove('hidden');
-                showQuestion();
-            }
-
-            function startTimer() {
-                clearTimeout(questionTimer);
-                clearInterval(countdownInterval);
-
-                let timeLeft = TIMER_DURATION;
-                timerDisplay.textContent = timeLeft;
-                timerDisplay.className = 'absolute top-10 left-10 w-11 h-11 rounded-full bg-slate-100 border-2 border-slate-600 flex items-center justify-center text-base font-bold text-slate-800 transition-all duration-300 ease-in-out';
-                
-                countdownInterval = setInterval(() => {
-                    timeLeft--;
-                    timerDisplay.textContent = timeLeft;
-                    if (timeLeft <= 10 && timeLeft > 5) {
-                        timerDisplay.classList.add('warning');
-                    } else if (timeLeft <= 5) {
-                        timerDisplay.classList.add('danger');
-                    }
-                }, 1000);
-
-                questionTimer = setTimeout(() => {
-                    clearInterval(countdownInterval);
-                    handleTimeUp();
-                }, TIMER_DURATION * 1000);
-            }
-
-            function handleTimeUp() {
-                 selectAnswer(null);
-            }
-
-            function showQuestion() {
-                resetState();
-                const questionData = activeQuiz[currentQuestionIndex];
-
-                questionCounterDisplay.textContent = `${currentQuestionIndex + 1}/${activeQuiz.length}`;
-                questionCounterDisplay.classList.remove('facil-bg', 'media-bg', 'dificil-bg');
-                if (questionData.difficulty === 'Fácil') {
-                    questionCounterDisplay.classList.add('facil-bg');
-                } else if (questionData.difficulty === 'Média') {
-                    questionCounterDisplay.classList.add('media-bg');
-                } else if (questionData.difficulty === 'Difícil') {
-                    questionCounterDisplay.classList.add('dificil-bg');
-                }
-
-                questionEl.textContent = questionData.question;
-                
-                questionData.options.forEach((option, index) => {
-                    const li = document.createElement('li');
-                    li.textContent = option;
-                    li.classList.add('quiz-option');
-                    li.dataset.index = index;
-                    li.addEventListener('click', selectAnswer);
-                    optionsEl.appendChild(li);
-                });
-                startTimer();
-            }
-
-            function resetState() {
-                clearTimeout(questionTimer);
-                clearInterval(countdownInterval);
-                while(optionsEl.firstChild) {
-                    optionsEl.removeChild(optionsEl.firstChild);
-                }
-                document.body.classList.remove('correct-bg', 'incorrect-bg');
-            }
-            
-            function selectAnswer(e) {
-                clearTimeout(questionTimer);
-                clearInterval(countdownInterval);
-
-                const selectedOption = e ? e.target : null;
-                const currentQuestion = activeQuiz[currentQuestionIndex];
-                const correctIndex = currentQuestion.correctAnswer;
-                let isCorrect = false;
-
-                if(selectedOption && parseInt(selectedOption.dataset.index) === correctIndex) {
-                    isCorrect = true;
-                }
-                
-                Array.from(optionsEl.children).forEach((optionNode, index) => {
-                    optionNode.classList.add('disabled');
-                    if (index === correctIndex) {
-                        optionNode.classList.add('correct-answer');
-                    }
-                });
-
-                if (isCorrect) {
-                    score++;
-                    if(selectedOption) selectedOption.classList.add('correct-answer');
-                    document.body.classList.add('correct-bg');
-                    if (!correctlyAnsweredIds.includes(currentQuestion.id)) {
-                        correctlyAnsweredIds.push(currentQuestion.id);
-                        saveProgress();
-                        updateProgressBar();
-                    }
-                } else {
-                    if (selectedOption) selectedOption.classList.add('incorrect-answer');
-                    missedTopics.push(currentQuestion.topic);
-                    document.body.classList.add('incorrect-bg');
-                }
 
                 setTimeout(() => {
-                    currentQuestionIndex++;
-                    if(currentQuestionIndex < activeQuiz.length) {
-                        showQuestion();
-                    } else {
-                        showResults();
-                    }
-                }, 2500); 
-            }
+                    crystalBallContainer.style.animation = 'shake 0.8s';
+                }, 100);
+
+                setTimeout(() => {
+                    crystalBallText.textContent = answer;
+                    crystalBallText.style.opacity = '1';
+                    crystalBallContainer.style.animation = '';
+                }, 900);
+            };
             
-            function showResults() {
-                resetState();
-                quizContainer.classList.add('hidden');
-                resultsContainer.classList.remove('hidden');
-
-                const percentage = activeQuiz.length > 0 ? Math.round((score / activeQuiz.length) * 100) : 0;
-                document.getElementById('quiz-percentage').textContent = `${percentage}%`;
-                document.getElementById('stat-correct-count').textContent = `✔️ ${score} Acertos`;
-                document.getElementById('stat-incorrect-count').textContent = `❌ ${activeQuiz.length - score} Erros`;
-                
-                const missedListEl = document.getElementById('missed-topics-list');
-                missedListEl.innerHTML = '';
-                
-                if (missedTopics.some(t => t)) {
-                     const uniqueMissedTopics = [...new Set(missedTopics.filter(t => t))];
-                     uniqueMissedTopics.forEach(topicName => {
-                         const targetCard = Array.from(document.querySelectorAll('.topic-card .summary'))
-                             .find(s => s.textContent.trim() === topicName)?.parentElement;
-                         if (targetCard) {
-                             const bubble = document.createElement('li');
-                             bubble.textContent = topicName;
-                             bubble.classList.add('missed-topic-bubble');
-                             bubble.addEventListener('click', (e) => {
-                                 e.currentTarget.classList.add('visited-topic');
-                                 targetCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                                 if (!targetCard.classList.contains('is-open')) {
-                                     toggleAccordion(targetCard);
-                                 }
-                             });
-                             missedListEl.appendChild(bubble);
-                         }
-                     });
-                } else {
-                     const congrats = document.createElement('li');
-                     if (activeQuiz.length > 0 && score === activeQuiz.length) {
-                         congrats.textContent = "Parabéns, você acertou tudo!";
-                         congrats.classList.add('text-green-600', 'font-semibold');
-                     } else {
-                         congrats.textContent = "Você não errou nenhuma questão com tópico associado. Bom trabalho!";
-                     }
-                     missedListEl.appendChild(congrats);
-                }
-                 checkCompletion();
-            }
-            
-            function resetProgress() {
-                if (window.confirm("Você tem certeza que deseja zerar todo o seu progresso? Esta ação não pode ser desfeita.")) {
-                    localStorage.removeItem('beta_quiz_progress');
-                    correctlyAnsweredIds = [];
-                    updateProgressBar();
-                    checkCompletion();
-                }
-            }
-
-            startBtn.addEventListener('click', startQuiz);
-            restartBtn.addEventListener('click', () => {
-                resultsContainer.classList.add('hidden');
-                startArea.classList.remove('hidden');
-                checkCompletion();
-            });
-            resetBtn.addEventListener('click', resetProgress);
-
-            loadProgress();
+            crystalBallButton.addEventListener('click', showAnswer);
+            crystalBallContainer.addEventListener('click', showAnswer);
         });
     </script>
+
 </body>
 </html>
 
