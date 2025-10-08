@@ -116,12 +116,53 @@
 
     </div>
 
-    <!-- Reprodutor de Música do YouTube (invisível e autoplay) -->
-    <div style="display: none;">
-        <iframe width="0" height="0" src="https://www.youtube.com/embed/izGwDsrQ1eQ?autoplay=1&loop=1&playlist=izGwDsrQ1eQ&controls=0&modestbranding=1&rel=0&showinfo=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-    </div>
+    <!-- Reprodutor de Música do YouTube -->
+    <div id="player" style="display: none;"></div>
 
     <script>
+        // Carrega a API do YouTube Player de forma assíncrona.
+        var tag = document.createElement('script');
+        tag.src = "https://www.youtube.com/iframe_api";
+        var firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+        var player;
+        // Esta função é chamada pela API do YouTube quando o código está pronto.
+        function onYouTubeIframeAPIReady() {
+            player = new YT.Player('player', {
+                height: '0',
+                width: '0',
+                videoId: 'izGwDsrQ1eQ',
+                playerVars: {
+                    'autoplay': 1,
+                    'controls': 0,
+                    'loop': 1,
+                    'playlist': 'izGwDsrQ1eQ', // Necessário para o loop funcionar
+                    'modestbranding': 1,
+                    'rel': 0,
+                    'showinfo': 0
+                },
+                events: {
+                    'onReady': onPlayerReady
+                }
+            });
+        }
+
+        // A API chama esta função quando o player está pronto.
+        function onPlayerReady(event) {
+            event.target.mute(); // Deixa mudo para o autoplay funcionar
+            event.target.playVideo();
+            // Adiciona um listener para tirar o mudo na primeira interação do usuário
+            document.body.addEventListener('click', unmuteOnFirstInteraction, { once: true });
+            document.body.addEventListener('touchstart', unmuteOnFirstInteraction, { once: true });
+        }
+
+        function unmuteOnFirstInteraction() {
+            if (player && typeof player.unMute === 'function') {
+                player.unMute();
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
             // --- Script para Fundo de Estrelas ---
             const starBackground = document.getElementById('star-background');
@@ -175,7 +216,6 @@
             let complimentIndex = 0;
 
             complimentButton.addEventListener('click', () => {
-                // Avança para a próxima cantada e volta ao início quando chega ao fim
                 complimentIndex = (complimentIndex + 1) % compliments.length;
                 
                 complimentText.style.opacity = 0;
@@ -223,8 +263,6 @@
             
             crystalBallButton.addEventListener('click', showAnswer);
             crystalBallContainer.addEventListener('click', showAnswer);
-            
-            // O botão final agora é um link, não precisa mais de script.
         });
     </script>
 
