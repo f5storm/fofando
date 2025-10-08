@@ -64,18 +64,15 @@
 </head>
 <body class="text-white">
 
-    <!-- Fundo de estrelas -->
-    <div id="star-background" class="fixed top-0 left-0 w-full h-full -z-10"></div>
+    <!-- Fundo de estrelas --><div id="star-background" class="fixed top-0 left-0 w-full h-full -z-10"></div>
 
     <div class="container mx-auto px-4 py-12 min-h-screen flex flex-col items-center justify-center">
 
-        <!-- Seção 1: Título Principal -->
-        <header class="text-center mb-16 fade-in">
+        <!-- Seção 1: Título Principal --><header class="text-center mb-16 fade-in">
             <h1 class="font-pacifico text-5xl md:text-7xl text-purple-300 drop-shadow-lg">Feito pra você, Duda Fófano</h1>
         </header>
 
-        <!-- Seção 2: Gerador de Elogios -->
-        <section class="w-full max-w-2xl text-center mb-16 fade-in fade-in-delay-1">
+        <!-- Seção 2: Gerador de Elogios --><section class="w-full max-w-2xl text-center mb-16 fade-in fade-in-delay-1">
             <div class="card rounded-2xl p-8 shadow-2xl">
                 <h2 class="text-3xl font-bold mb-4 text-pink-300">Gerador de Cantadas (quase) Infalíveis</h2>
                 <p class="text-lg mb-6" id="compliment-text">Queria ser uma integral para preencher a área sob as suas curvas.</p>
@@ -85,8 +82,7 @@
             </div>
         </section>
 
-        <!-- Seção 3: Bola de Cristal -->
-        <section class="w-full max-w-2xl text-center mb-16 fade-in fade-in-delay-2">
+        <!-- Seção 3: Bola de Cristal --><section class="w-full max-w-2xl text-center mb-16 fade-in fade-in-delay-2">
             <div class="card rounded-2xl p-8 shadow-2xl">
                  <h2 class="text-3xl font-bold mb-4 text-amber-300">A Bola de Cristal do Destino</h2>
                  <p class="mb-6">O que será que o futuro nos reserva? Faça uma pergunta (em pensamento) e clique para descobrir.</p>
@@ -94,7 +90,7 @@
                     <div class="w-full h-full bg-blue-900 rounded-full absolute top-0 left-0 opacity-60 group-hover:opacity-80 transition-opacity"></div>
                     <div id="crystal-ball-reflection" class="w-20 h-10 bg-white rounded-full absolute top-6 left-10 opacity-20 -rotate-12 group-hover:scale-110 transition-transform"></div>
                     <div id="crystal-ball-inner" class="w-full h-full flex items-center justify-center">
-                        <span id="crystal-ball-text" class="text-2xl font-bold text-white transition-opacity duration-500 opacity-0">?</span>
+                        <span id="crystal-ball-text" class="text-xl font-bold text-white transition-opacity duration-500 opacity-0 text-center px-2">?</span>
                     </div>
                  </div>
                  <button id="crystal-ball-button" class="btn-magic text-white font-bold py-3 px-8 rounded-full transition-transform transform hover:scale-110 shadow-lg">
@@ -103,8 +99,7 @@
             </div>
         </section>
         
-        <!-- Seção 4: Convite Final -->
-        <section class="w-full max-w-2xl text-center fade-in fade-in-delay-3">
+        <!-- Seção 4: Convite Final --><section class="w-full max-w-2xl text-center fade-in fade-in-delay-3">
             <div class="card rounded-2xl p-8 shadow-2xl">
                 <h2 class="text-3xl font-bold mb-4 text-cyan-300">Que tal criar algo real?</h2>
                 <p class="text-lg mb-6">Este site tem um último easter egg, mas ele só funciona offline...</p>
@@ -116,8 +111,11 @@
 
     </div>
 
-    <!-- Reprodutor de Música do YouTube -->
-    <div id="player" style="display: none;"></div>
+    <!-- Rodapé --><footer class="text-center py-8 text-gray-400 text-sm">
+        <p>Feito por Rafael Chaves Sebe.</p>
+    </footer>
+
+    <!-- Reprodutor de Música do YouTube --><div id="player" style="display: none;"></div>
 
     <script>
         // Carrega a API do YouTube Player de forma assíncrona.
