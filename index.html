@@ -9,6 +9,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Caveat&family=Montserrat&family=Pacifico&family=Playfair+Display&family=Poppins:wght@300;400;600&family=Roboto+Slab&family=Source+Code+Pro&display=swap" rel="stylesheet">
     <style>
+        html {
+            scroll-behavior: smooth;
+        }
         body {
             font-family: 'Poppins', sans-serif;
             background-color: #1a1a2e;
@@ -20,14 +23,8 @@
         h2 {
             font-family: 'Roboto Slab', serif;
         }
-        #secret-message {
-            font-family: 'Source Code Pro', monospace;
-        }
-        #compliment-text {
-            font-family: 'Playfair Display', serif; /* Fonte alterada para melhor legibilidade */
-            font-size: 1.5rem; 
-            line-height: 2rem;
-            min-height: 90px; /* Evita que o layout pule com cantadas de tamanhos diferentes */
+        .interactive-section, .quiz-question {
+            min-height: 250px;
         }
         .star {
             position: absolute;
@@ -43,6 +40,7 @@
             background: rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.5s ease;
         }
         .btn-magic {
             background: linear-gradient(45deg, #f87171, #fb923c, #a78bfa, #c084fc);
@@ -66,18 +64,38 @@
             animation: fadeOutAnimation 1s ease-out forwards;
         }
         @keyframes fadeOutAnimation {
-            from { opacity: 1; }
-            to { opacity: 0; }
+            from { opacity: 1; transform: translateY(0);}
+            to { opacity: 0; transform: translateY(-20px); }
         }
         .fade-in-delay-1 { animation-delay: 0.2s; }
-        .fade-in-delay-2 { animation-delay: 0.4s; }
-        .fade-in-delay-3 { animation-delay: 0.6s; }
-        .fade-in-delay-4 { animation-delay: 0.8s; }
-         @keyframes shake {
-            10%, 90% { transform: translate3d(-1px, 0, 0); }
-            20%, 80% { transform: translate3d(2px, 0, 0); }
-            30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
-            40%, 60% { transform: translate3d(4px, 0, 0); }
+        .interactive-option {
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+        .interactive-option:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: #a78bfa;
+        }
+        .locked-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(26, 26, 46, 0.8);
+            backdrop-filter: blur(4px);
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 1rem;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+            visibility: visible;
+            opacity: 1;
+        }
+        .content-locked .card {
+            filter: blur(2px);
+            opacity: 0.5;
         }
     </style>
 </head>
@@ -92,66 +110,87 @@
             <h1 class="font-pacifico text-5xl md:text-7xl text-purple-300 drop-shadow-lg">Feito pra você, Duda Fófano</h1>
         </header>
         <button id="start-button" class="btn-magic text-white font-bold py-3 px-8 rounded-full transition-transform transform hover:scale-110 shadow-lg fade-in fade-in-delay-1">
-            Começar
+            Entrar (por sua conta e risco)
         </button>
     </div>
 
     <!-- Conteúdo Principal -->
     <main id="main-content" class="hidden">
-        <div class="container mx-auto px-4 py-12 min-h-screen flex flex-col items-center justify-center">
-            <!-- Seção 2: Gerador de Elogios -->
-            <section class="w-full max-w-2xl text-center mb-16 fade-in fade-in-delay-1">
+        <div class="container mx-auto px-4 py-12 min-h-screen flex flex-col items-center justify-center space-y-16">
+            
+            <!-- Seção 1: Quiz -->
+            <section id="quiz-section" class="w-full max-w-2xl text-center fade-in">
                 <div class="card rounded-2xl p-8 shadow-2xl">
-                    <h2 class="text-3xl font-bold mb-4 text-pink-300">Gerador de Cantadas (quase) Infalíveis</h2>
-                    <p class="mb-6" id="compliment-text"></p>
-                    <button id="compliment-button" class="btn-magic text-white font-bold py-3 px-8 rounded-full transition-transform transform hover:scale-110 shadow-lg">
-                        Tentar outra cantada
-                    </button>
-                </div>
-            </section>
-
-            <!-- Seção 3: Bola de Cristal -->
-            <section class="w-full max-w-2xl text-center mb-16 fade-in fade-in-delay-2">
-                <div class="card rounded-2xl p-8 shadow-2xl">
-                     <h2 class="text-3xl font-bold mb-4 text-amber-300">A Bola de Cristal do Destino</h2>
-                     <p class="mb-6">O que será que o futuro nos reserva? Faça uma pergunta (em pensamento) e clique para descobrir.</p>
-                     <div id="crystal-ball-container" class="relative w-48 h-48 mx-auto mb-6 cursor-pointer group">
-                        <div class="w-full h-full bg-blue-900 rounded-full absolute top-0 left-0 opacity-60 group-hover:opacity-80 transition-opacity"></div>
-                        <div id="crystal-ball-reflection" class="w-20 h-10 bg-white rounded-full absolute top-6 left-10 opacity-20 -rotate-12 group-hover:scale-110 transition-transform"></div>
-                        <div id="crystal-ball-inner" class="w-full h-full flex items-center justify-center">
-                            <span id="crystal-ball-text" class="text-xl font-bold text-white transition-opacity duration-500 opacity-0 text-center px-2">?</span>
+                    <h2 class="text-3xl font-bold mb-4 text-pink-300">Definidor de Rolês (100% científico)</h2>
+                    
+                    <div id="question1" class="quiz-question">
+                        <p class="text-xl mb-6">Primeiro: qual seu nível de energia social?</p>
+                        <div class="space-y-4">
+                            <button data-answer="a" class="interactive-option quiz-option w-full text-left p-4 rounded-lg">Bateria em 10% (só quero paz)</button>
+                            <button data-answer="b" class="interactive-option quiz-option w-full text-left p-4 rounded-lg">100% carregada (pronta pra tudo)</button>
                         </div>
-                     </div>
-                     <button id="crystal-ball-button" class="btn-magic text-white font-bold py-3 px-8 rounded-full transition-transform transform hover:scale-110 shadow-lg">
-                        Revelar o Futuro
-                    </button>
+                    </div>
+
+                    <div id="question2" class="quiz-question hidden">
+                        <p class="text-xl mb-6">Momento crucial: o que a gente come?</p>
+                        <div class="space-y-4">
+                            <button data-answer="v" class="interactive-option quiz-option w-full text-left p-4 rounded-lg">Coisas que não tiveram mãe, por favor</button>
+                            <button data-answer="o" class="interactive-option quiz-option w-full text-left p-4 rounded-lg">Meu estômago não julga ninguém</button>
+                        </div>
+                    </div>
+
+                    <div id="question3" class="quiz-question hidden">
+                        <p class="text-xl mb-6">E pra fechar o combo?</p>
+                        <div class="space-y-4">
+                            <button data-answer="a" class="interactive-option quiz-option w-full text-left p-4 rounded-lg">Preciso de açúcar pra viver</button>
+                            <button data-answer="b" class="interactive-option quiz-option w-full text-left p-4 rounded-lg">Salgado > Doce (é a lei)</button>
+                        </div>
+                    </div>
+
+                    <div id="quiz-result" class="quiz-question hidden">
+                        <p class="text-xl mb-2 font-semibold">Analisando dados... O computador diz:</p>
+                        <p id="result-text" class="text-lg mb-6"></p>
+                        <button id="unlock-debate-button" class="btn-magic text-white font-bold py-3 px-8 rounded-full transition-transform transform hover:scale-110 shadow-lg mt-4 hidden">
+                            Desbloquear Próxima Etapa
+                        </button>
+                    </div>
                 </div>
             </section>
             
-            <!-- Nova Seção: Mensagem Secreta -->
-            <section class="w-full max-w-2xl text-center mb-16 fade-in fade-in-delay-3">
+            <!-- Seção 2: Debate Vegetariano -->
+            <section id="debate-section" class="w-full max-w-2xl text-center relative content-locked">
+                <div id="debate-lock" class="locked-overlay">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-purple-300"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                </div>
                 <div class="card rounded-2xl p-8 shadow-2xl">
-                     <h2 class="text-3xl font-bold mb-4 text-teal-300">Decifre a Mensagem Secreta</h2>
-                     <p class="mb-6">Existe uma mensagem escondida aqui. Será que você consegue revelá-la?</p>
-                     <div class="bg-gray-900 rounded-lg p-4 mb-6 text-left">
-                        <pre id="secret-message" class="text-lg whitespace-pre-wrap text-green-400"></pre>
-                     </div>
-                     <button id="decrypt-button" class="btn-magic text-white font-bold py-3 px-8 rounded-full transition-transform transform hover:scale-110 shadow-lg">
-                        Decifrar
-                    </button>
+                    <!-- Conteúdo do debate ativo -->
+                    <div id="debate-active-content">
+                        <h2 class="text-3xl font-bold mb-4 text-pink-300">Debate do Século: Eu vs. Suas Plantas</h2>
+                        <div id="debate-content" class="interactive-section flex flex-col justify-center">
+                            <p id="argument-text" class="text-xl mb-6">Meu primeiro argumento: e o sofrimento do tomate, que é arrancado do pé contra a sua vontade? Pense nisso.</p>
+                            <div id="debate-options" class="space-y-4">
+                                <button class="interactive-option debate-option w-full text-left p-4 rounded-lg">Absurdo! Próximo argumento.</button>
+                                <button class="interactive-option debate-option w-full text-left p-4 rounded-lg">Estou começando a duvidar de tudo...</button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Conteúdo do convite (resultado do debate) -->
+                    <div id="debate-result-content" class="hidden">
+                         <h2 class="text-3xl font-bold mb-4 text-cyan-300">Ok, você venceu. Parabéns.</h2>
+                         <p class="text-lg mb-6">Meus argumentos foram destruídos. Para comemorar sua superioridade moral e gastronômica, que tal um acordo de paz neste lugar? (Eles têm mais que mato pra você comer, prometo).</p>
+                         <div class="my-4 p-4 bg-black bg-opacity-20 rounded-lg">
+                            <p class="font-semibold">Deck Açaí e Food</p>
+                            <p class="text-gray-300">Av. Rio Doce, 3379 - Ilha dos Araújos, Gov. Valadares - MG</p>
+                         </div>
+                         <a href="https://www.google.com/maps/search/?api=1&query=Deck+A%C3%A7a%C3%AD+e+Food%2C+Av.+Rio+Doce%2C+3379+-+Ilha+dos+Ara%C3%BAjos%2C+Gov.+Valadares+-+MG%2C+35020-500" target="_blank" rel="noopener noreferrer" class="bg-green-500 text-white font-bold py-3 px-8 rounded-full transition-transform transform hover:scale-110 shadow-lg hover:bg-green-400 inline-block">
+                            Confere o local da trégua
+                         </a>
+                    </div>
                 </div>
             </section>
 
-            <!-- Seção 5: Convite Final -->
-            <section class="w-full max-w-2xl text-center fade-in fade-in-delay-4">
-                <div class="card rounded-2xl p-8 shadow-2xl">
-                    <h2 class="text-3xl font-bold mb-4 text-cyan-300">indo para realidade...</h2>
-                    <p class="text-lg mb-6">Este site tem um último easter egg, mas ele só funciona offline...</p>
-                    <a href="data:text/vcard;charset=utf-8,BEGIN%3AVCARD%0AVERSION%3A3.0%0AFN%3AAmor%20Da%20Sua%20Vida%0ATEL%3BTYPE%3DCELL%3A33984363259%0AEND%3AVCARD" download="contato.vcf" class="bg-green-500 text-white font-bold py-3 px-8 rounded-full transition-transform transform hover:scale-110 shadow-lg hover:bg-green-400 inline-block">
-                        Eu topo!
-                    </a>
-                </div>
-            </section>
+            <!-- Seção Final: Convite -->
+            <!-- Esta seção foi removida e seu conteúdo mesclado com a seção de debate -->
         </div>
 
         <!-- Rodapé -->
@@ -171,33 +210,17 @@
         firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
         var player;
-        // Esta função é chamada pela API do YouTube quando o código está pronto.
         function onYouTubeIframeAPIReady() {
             player = new YT.Player('player', {
-                height: '0',
-                width: '0',
-                videoId: 'izGwDsrQ1eQ',
-                playerVars: {
-                    'autoplay': 1,
-                    'controls': 0,
-                    'loop': 1,
-                    'playlist': 'izGwDsrQ1eQ', // Necessário para o loop funcionar
-                    'modestbranding': 1,
-                    'rel': 0,
-                    'showinfo': 0,
-                    'playsinline': 1 // Essencial para iOS
-                },
-                events: {
-                    'onReady': onPlayerReady
-                }
+                height: '0', width: '0', videoId: 'yMwi16KYqFo', // ID do vídeo atualizado aqui
+                playerVars: { 'autoplay': 1, 'controls': 0, 'loop': 1, 'playlist': 'yMwi16KYqFo', 'modestbranding': 1, 'rel': 0, 'showinfo': 0, 'playsinline': 1 },
+                events: { 'onReady': onPlayerReady }
             });
         }
 
-        // A API chama esta função quando o player está pronto.
         function onPlayerReady(event) {
-            event.target.mute(); // Deixa mudo para o autoplay funcionar
+            event.target.mute();
             event.target.playVideo();
-            // Adiciona um listener para tirar o mudo na primeira interação do usuário
             document.body.addEventListener('click', unmuteOnFirstInteraction, { once: true });
             document.body.addEventListener('touchstart', unmuteOnFirstInteraction, { once: true });
         }
@@ -205,22 +228,20 @@
         function unmuteOnFirstInteraction() {
             if (player && typeof player.unMute === 'function') {
                 player.unMute();
-                // Garante que o vídeo toque caso o autoplay inicial tenha sido bloqueado
-                if (player.getPlayerState() !== 1) { // 1 === YT.PlayerState.PLAYING
-                    player.playVideo();
-                }
+                if (player.getPlayerState() !== 1) { player.playVideo(); }
             }
         }
 
         document.addEventListener('DOMContentLoaded', function() {
-            // --- Script da Tela de Início ---
             const startScreen = document.getElementById('start-screen');
             const startButton = document.getElementById('start-button');
             const mainContent = document.getElementById('main-content');
-
+            const starBackground = document.getElementById('star-background');
+            const debateSection = document.getElementById('debate-section');
+            
+            // --- Script da Tela de Início ---
             startButton.addEventListener('click', () => {
                 startScreen.classList.add('fade-out');
-
                 startScreen.addEventListener('animationend', () => {
                     startScreen.style.display = 'none';
                     mainContent.classList.remove('hidden');
@@ -228,205 +249,104 @@
             });
             
             // --- Script para Fundo de Estrelas ---
-            const starBackground = document.getElementById('star-background');
             const numStars = 100;
             for (let i = 0; i < numStars; i++) {
                 let star = document.createElement('div');
                 star.className = 'star';
                 let size = Math.random() * 3;
-                star.style.width = `${size}px`;
-                star.style.height = `${size}px`;
-                star.style.top = `${Math.random() * 100}%`;
-                star.style.left = `${Math.random() * 100}%`;
+                star.style.width = `${size}px`; star.style.height = `${size}px`;
+                star.style.top = `${Math.random() * 100}%`; star.style.left = `${Math.random() * 100}%`;
                 star.style.animationDelay = `${Math.random() * 5}s`;
                 starBackground.appendChild(star);
             }
 
-            // --- Script para Gerador de Cantadas ---
-            const compliments = [
-                "Você é cardiologista? Porque você acelerou meu coração.",
-                "Você deve ser um ângulo de 90 graus, porque está sempre certa.",
-                "Nossa relação é como um gráfico de f(x) = x², sempre positiva.",
-                "Sua beleza é de deixar qualquer um em parada cardiorrespiratória.",
-                "Você deve ser feita de Cobre e Telúrio, porque é muito Cu-Te.",
-                "Você é uma hemorragia? Porque não consigo te estancar do meu pensamento.",
-                "Você não é Azitromicina, mas um pouco de você curaria qualquer mal.",
-                "Gata, você é a hipotenusa? Porque é o lado oposto ao meu ângulo reto.",
-                "Você é neurologista? Porque você não sai da minha cabeça.",
-                "Queria ser uma integral para preencher a área sob as suas curvas.",
-                "Acho que estou com arritmia toda vez que te vejo.",
-                "Você é a raiz quadrada de -1? Porque você é simplesmente irreal.",
-                "Se eu fosse uma enzima, seria a helicase para abrir seu coração.",
-                "Se a beleza fosse um número, você seria o infinito.",
-                "Você é a vacina que eu preciso contra a tristeza.",
-                "Você é uma calculadora? Porque sem você, não consigo resolver meus problemas.",
-                "Você transforma meu conjunto vazio em um conjunto unitário.",
-                "Seu nome é Mielina? Porque você acelera meus impulsos nervosos.",
-                "Você é um axioma? Porque aceito sua beleza sem precisar de provas.",
-                "Me chama de desfibrilador, porque você reanima meu coração.",
-                "Se você fosse uma função, seria a minha preferida para derivar.",
-                "Nós dois temos uma química perfeita.",
-                "Você é um ponto e vírgula? Porque sinto que não posso continuar sem você.",
-                "Seu nome é CSS? Porque você dá estilo a tudo na minha vida.",
-                "Esquece a segunda lei de Newton. A única força que importa é a nossa atração.",
-                "Você deve ser um buraco negro, pois a força da sua atração é irresistível.",
-                "Me chama de Pitágoras e deixa eu te mostrar que a soma dos nossos quadrados é a perfeição.",
-                "Você é um número primo? Porque você é realmente única.",
-                "Se nós fôssemos funções, eu seria sua derivada para estar sempre tangente a você."
-            ];
-            const complimentText = document.getElementById('compliment-text');
-            const complimentButton = document.getElementById('compliment-button');
-            let shuffledCompliments = [...compliments];
-            let complimentIndex = 0;
-            let showingFinalMessage = false;
-            const finalMessage = "Se nenhuma dessas cantadas funcionar, me manda uma melhor.";
+            // --- Lógica do Quiz ---
+            const questions = [ document.getElementById('question1'), document.getElementById('question2'), document.getElementById('question3') ];
+            const quizResult = document.getElementById('quiz-result');
+            const resultText = document.getElementById('result-text');
+            const quizOptions = document.querySelectorAll('.quiz-option');
+            const unlockDebateButton = document.getElementById('unlock-debate-button');
+            let currentQuestionIndex = 0;
+            let answers = { a: 0, b: 0 };
 
-            function shuffle(array) {
-                for (let i = array.length - 1; i > 0; i--) {
-                    const j = Math.floor(Math.random() * (i + 1));
-                    [array[i], array[j]] = [array[j], array[i]];
-                }
-            }
-
-            // Initial setup
-            shuffle(shuffledCompliments);
-            complimentText.textContent = shuffledCompliments[0];
-
-            complimentButton.addEventListener('click', () => {
-                let nextText = "";
-
-                if (showingFinalMessage) {
-                    // Reset and reshuffle
-                    shuffle(shuffledCompliments);
-                    complimentIndex = 0;
-                    showingFinalMessage = false;
-                    nextText = shuffledCompliments[complimentIndex];
-                } else {
-                    complimentIndex++;
-                    if (complimentIndex < shuffledCompliments.length) {
-                        nextText = shuffledCompliments[complimentIndex];
-                    } else {
-                        // Reached the end, show the final message
-                        nextText = finalMessage;
-                        showingFinalMessage = true;
-                    }
-                }
-                
-                complimentText.style.opacity = 0;
-                setTimeout(() => {
-                    complimentText.textContent = nextText;
-                    complimentText.style.opacity = 1;
-                }, 300);
+            quizOptions.forEach(button => {
+                button.addEventListener('click', () => {
+                    const answer = button.getAttribute('data-answer');
+                    if (answer === 'a' || answer === 'b') answers[answer]++;
+                    
+                    questions[currentQuestionIndex].classList.add('fade-out');
+                    questions[currentQuestionIndex].addEventListener('animationend', () => {
+                        questions[currentQuestionIndex].classList.add('hidden');
+                        currentQuestionIndex++;
+                        if (currentQuestionIndex < questions.length) {
+                            questions[currentQuestionIndex].classList.remove('hidden');
+                            questions[currentQuestionIndex].classList.add('fade-in');
+                        } else {
+                            showQuizResult();
+                        }
+                    }, { once: true });
+                });
             });
 
-            // --- Script para Bola de Cristal ---
-            const crystalBallButton = document.getElementById('crystal-ball-button');
-            const crystalBallText = document.getElementById('crystal-ball-text');
-            const crystalBallContainer = document.getElementById('crystal-ball-container');
-
-            const answers = [
-                "É certo!",
-                "Sinais apontam que sim.",
-                "Pode contar com isso.",
-                "Tudo indica que vai rolar.",
-                "Sem dúvida.",
-                "As perspectivas são boas.",
-                "Acho que sim.",
-                "Concentre-se e pergunte de novo."
-            ];
-
-            const showAnswer = () => {
-                const randomIndex = Math.floor(Math.random() * answers.length);
-                const answer = answers[randomIndex];
-
-                crystalBallText.textContent = "?";
-                crystalBallText.style.opacity = '0';
-                crystalBallContainer.style.animation = '';
-
-
-                setTimeout(() => {
-                    crystalBallContainer.style.animation = 'shake 0.8s';
-                }, 100);
-
-                setTimeout(() => {
-                    crystalBallText.textContent = answer;
-                    crystalBallText.style.opacity = '1';
-                    crystalBallContainer.style.animation = '';
-                }, 900);
-            };
-            
-            crystalBallButton.addEventListener('click', showAnswer);
-            crystalBallContainer.addEventListener('click', showAnswer);
-
-            // --- Script para Mensagem Secreta ---
-            const decryptButton = document.getElementById('decrypt-button');
-            const secretMessageElement = document.getElementById('secret-message');
-            const secretPhrases = [
-                "Cada clique revela um pouco mais...",
-                "Ainda não acabou, tem mais um segredo...",
-                "Você está perto de descobrir tudo.",
-                "Só mais um enigma para resolver.",
-                "Clique no botão verde no final da página para descobrir..."
-            ];
-            const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()[]{};";
-            let currentPhraseIndex = -1;
-            let isDecrypting = false;
-
-            // Gera um texto inicial aleatório para parecer um código
-            let initialEncryptedText = "";
-            const placeholderLength = secretPhrases[0].length;
-            for (let i = 0; i < placeholderLength; i++) {
-                 if (secretPhrases[0][i] === ' ') {
-                    initialEncryptedText += ' '; // Mantém espaços para preservar a estrutura
+            function showQuizResult() {
+                let resultMessage = "";
+                if (answers.a > answers.b) {
+                    resultMessage = "Diagnóstico: sua bateria social está em 10%. Um rolê tranquilo pra não dar muito trabalho.";
                 } else {
-                    initialEncryptedText += chars[Math.floor(Math.random() * chars.length)];
+                    resultMessage = "Diagnóstico: 100% de energia, pronta pro caos. Anotado. Mas primeiro a gente come.";
                 }
+                resultText.textContent = resultMessage;
+                quizResult.classList.remove('hidden');
+                quizResult.classList.add('fade-in');
+                unlockDebateButton.classList.remove('hidden');
+                unlockDebateButton.classList.add('fade-in');
             }
-            secretMessageElement.textContent = initialEncryptedText;
+            
+            unlockDebateButton.addEventListener('click', () => {
+                const debateLock = document.getElementById('debate-lock');
+                debateLock.style.opacity = '0';
+                debateLock.addEventListener('transitionend', () => debateLock.style.visibility = 'hidden');
+                debateSection.classList.remove('content-locked');
+                debateSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            });
 
-            const decryptNextMessage = () => {
-                if (isDecrypting) return;
-                isDecrypting = true;
+            // --- Lógica do Debate ---
+            const argumentText = document.getElementById('argument-text');
+            const debateOptionsContainer = document.getElementById('debate-options');
+            const debateStages = [
+                { argument: "Ponto nº 2: O brócolis. Basicamente uma árvore em miniatura. Você comeria uma floresta inteira sem peso na consciência?", options: ["Sim, uma floresta deliciosa.", "Meus crimes não têm limites."] },
+                { argument: "Argumento final: A cenoura. Ela só queria viver em paz debaixo da terra, no escurinho. Isso não é crueldade?", options: ["Ok, esse foi fraco.", "Ainda estou processando o lance do brócolis."] }
+            ];
+            let currentStageIndex = 0;
 
-                currentPhraseIndex = (currentPhraseIndex + 1) % secretPhrases.length;
-                const finalMessage = secretPhrases[currentPhraseIndex];
-                
-                decryptButton.disabled = true;
-                decryptButton.style.opacity = '0.5';
-                decryptButton.style.cursor = 'not-allowed';
+            debateOptionsContainer.addEventListener('click', (e) => {
+                if (e.target.classList.contains('debate-option')) {
+                    argumentText.classList.add('fade-out');
+                    setTimeout(() => {
+                        if (currentStageIndex < debateStages.length) {
+                            const nextStage = debateStages[currentStageIndex];
+                            argumentText.textContent = nextStage.argument;
+                            const optionButtons = debateOptionsContainer.querySelectorAll('.debate-option');
+                            optionButtons[0].textContent = nextStage.options[0];
+                            optionButtons[1].textContent = nextStage.options[1];
+                            argumentText.classList.remove('fade-out'); argumentText.classList.add('fade-in');
+                            currentStageIndex++;
+                        } else {
+                           const debateActiveContent = document.getElementById('debate-active-content');
+                           const debateResultContent = document.getElementById('debate-result-content');
 
-                let iteration = 0;
-                
-                const interval = setInterval(() => {
-                    secretMessageElement.textContent = finalMessage.split("")
-                        .map((char, index) => {
-                            if (finalMessage[index] === ' ') return ' ';
-                            if(index < iteration) {
-                                return finalMessage[index];
-                            }
-                            return chars[Math.floor(Math.random() * chars.length)];
-                        })
-                        .join("");
-                    
-                    if(iteration >= finalMessage.length){ 
-                        clearInterval(interval);
-                        secretMessageElement.textContent = finalMessage;
-                        decryptButton.disabled = false;
-                        decryptButton.style.opacity = '1';
-                        decryptButton.style.cursor = 'pointer';
-                        isDecrypting = false;
-                    }
-                    
-                    iteration += 1 / 2;
-                }, 40);
-            };
-
-            decryptButton.addEventListener('click', decryptNextMessage);
-
+                           debateActiveContent.classList.add('fade-out');
+                           debateActiveContent.addEventListener('animationend', () => {
+                               debateActiveContent.style.display = 'none';
+                               debateResultContent.classList.remove('hidden');
+                               debateResultContent.classList.add('fade-in');
+                           }, { once: true });
+                        }
+                    }, 500);
+                }
+            });
         });
     </script>
-
 </body>
 </html>
-
 
